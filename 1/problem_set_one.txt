@@ -1,0 +1,60 @@
+1. What is the running time of a 3 way merge sort?
+
+n log(n) because the increased steps and decreased step sizes cancel out - correct
+
+Feedback: There is still a logarithmic number of levels, and the overall amount of work at each level is still linear
+
+
+2.
+f(n) = O(g(n))
+Is f(n) * log2(f(n)^c) = O(g(n) * log2(g(n)))?
+
+For big O definition to hold you need to find a constant x such that f(n) <= x g(n) for sufficiently large values of n
+
+For example:
+c f(n) log2(f(n)) <= x g(n) log2(g(n)) does hold for c = 1 and x = 1000000
+
+However this does not hold if g(n) /= O(g(n))
+For example f(n) = n^2 and g(n) = n then you could never choose constant x that would hold the inequality for all values
+of n
+
+==> True - correct
+
+Feedback: Roughly, because the constant c in the exponent is inside a logarithm, it becomes part of the leading
+constant which is suppressed by the big-Oh notation
+
+3.
+f(n) = O(g(n))
+Is 2^f(n) = O(2^(g(n)))
+
+Definition for sufficiently large n, so option 2
+Depends on f and g
+
+
+
+4. Running time of a k-way merging algorithm?
+
+For three way
+2n + 3n = 5n => n
+
+For four way
+2n + 3n + 4n = 9n =>
+
+Theta(nk) - wrong
+
+Try again:
+For n = 5
+For three way
+10 + 15 = 25 (/ 5 => 5)
+
+For four way
+10 + 15 + 20 = 45 (/ 5 => 9)
+
+Theta(n k^2) because you have to traverse the values again for every new k - correct
+
+Feedback: For the upper bound, the merged list size is always O(kn), merging is linear in the size of the larger array,
+and there are k iterations. For the lower bound, each of the last k/2 merged takes Omega(kn) time
+
+5. Order functions by increasing growth rate
+
+
