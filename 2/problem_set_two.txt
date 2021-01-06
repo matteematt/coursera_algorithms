@@ -1,0 +1,89 @@
+Problem set 2
+
+Master method equation
+
+T(n) = a.T(n/b) + C(n^d)
+
+if a = b^d (work is the same on every level)
+T(n) = O(n^d.log n)
+
+if a < b^d (work reduces every level, best case is dominated by root with work being n^d)
+T(n) = O(n^d)
+
+if a > b^d (work increases every level, simple case is work being dominated by the leaves)
+T(n) = O(n^(log_b a))
+
+1. T(n) = 7 * T(n/3) + n^2, what is the overall asymptotic running time?
+a = 7
+b = 3
+d = 2
+
+7 < 3^2
+
+=> Theta(n^2)
+
+2. T(n) = 9 * T(n/3) + n^2, what is the overall asymptotic running time?
+a = 9
+b = 3
+d = 2
+
+9 = 3^2
+
+=> Theta(n^2 . log n)
+
+3. T(n) = 5 * T(n/3) + 4n, what is the overall asymptotic running time?
+a = 5
+b = 3
+c = 1
+
+5 > 3^1
+
+=> Theta(n^(log_3 5))
+
+4. What is the asymptotic running time of the below algorithm (we can multiply and divide in constant time)
+
+FastPower(a,b):
+	if b = 1
+		return a
+	else
+		c = a * a
+		ans = FastPower(c,(b/2))
+
+	if !even b
+		return a * ans
+	else
+		return ans
+end
+
+Only creates one more recursive call per job
+=> a = 1
+
+No less data to operate on per call
+=> b = 1
+
+Other work in constant time
+=> d = 1
+
+=> b . log b = WRONG
+Feedback => Incorrect. This would be even worse than the naive method of multiplying a by itself b
+times...
+
+Thinking about the problem as a set of multiplication, b is actually 2 as its halving the number of
+multiplications
+
+Diving it in half so
+
+=> Theta(log(b))
+
+
+5. Choose the smallest correct upper bound on the solution for the following recurrence (note the
+master method does not apply)
+
+T(1) = 1
+T(n) <= T([n ^ -1]) + 1 for n > 1
+Here [x] denotes the floor function
+
+=> O(log log n)
+
+Feedback => Bingo! This answer may be the easiest to see by writing n as 2^log n and then noting
+every square-root operation cuts the exponent in half.
