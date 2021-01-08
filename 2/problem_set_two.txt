@@ -74,6 +74,7 @@ multiplications
 Diving it in half so
 
 => Theta(log(b))
+Feedback => Correct. Constant work per digit in the binary expansion of B.
 
 
 5. Choose the smallest correct upper bound on the solution for the following recurrence (note the
