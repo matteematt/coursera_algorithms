@@ -19,5 +19,13 @@ mergeSort [] (y:ys) = y : mergeSort [] ys
 mergeSort x@(x1:xs) y@(y1:ys) = if x1 <= y1 then x1 : mergeSort xs y
                                             else y1 : mergeSort x ys
 
+
+splitInversions :: Ord a => [a] -> [a] -> Int -> [a]
+splitInversions [] [] i = (i,[])
+splitInversions (x:xs) [] i = let (i',v) = splitInversions xs [] i in x :
+splitInversions [] (y:ys) i = y : splitInversions [] ys (i+1)
+splitInversions x@(x1:xs) y@(y1:ys) i = if x1 <= y1 then (_,x1 : splitInversions xs y i)
+                                                    else (_,y1 : splitInversions x ys (i+1))
+
 main :: IO ()
 main = undefined
