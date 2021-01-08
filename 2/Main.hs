@@ -1,15 +1,16 @@
 module Main where
 
-t1 = [3, 5, 20, 53] :: [Int]
-t2 = [11, 15, 25, 40] :: [Int]
+import Data.List
+
+ans = "2407905288"
 
 divideAndConquer :: Ord a => ([a] -> [a] -> [a]) -> [a] -> [a]
 divideAndConquer _ [] = []
 divideAndConquer _ [x] = [x]
 divideAndConquer _ [x1,x2] = if x1 <= x2 then [x1,x2] else [x2,x1]
 divideAndConquer fn xs = let (lhs,rhs) = splitAt (div (length xs) 2) xs
-                             lhs' = divideAndConquer mergeSort lhs
-                             rhs' = divideAndConquer mergeSort rhs
+                             lhs' = divideAndConquer fn lhs
+                             rhs' = divideAndConquer fn rhs
                           in fn lhs' rhs'
 
 mergeSort :: Ord a => [a] -> [a] -> [a]
@@ -18,14 +19,28 @@ mergeSort (x:xs) [] = x : mergeSort xs []
 mergeSort [] (y:ys) = y : mergeSort [] ys
 mergeSort x@(x1:xs) y@(y1:ys) = if x1 <= y1 then x1 : mergeSort xs y
                                             else y1 : mergeSort x ys
+-- Counting inversions
+fastCI :: Ord a => ([a] -> Int -> [a] -> (Int,[a])) -> [a] -> (Int,[a])
+fastCI _ [] = (0,[])
+fastCI _ [x] = (0,[x])
+fastCI _ [x1,x2] = if x1 <= x2 then (0,[x1,x2]) else (1,[x2,x1])
+fastCI fn xs = let (lhs,rhs) = splitAt (div (length xs) 2) xs
+                   (li,lhs') = fastCI fn lhs
+                   (ri,rhs') = fastCI fn rhs
+                   (si,xs') = fn lhs' (length lhs') rhs'
+                in ((li + ri + si), xs')
 
+fastSI :: Ord a => [a] -> Int -> [a] -> (Int,[a])
+fastSI [] _ [] = (0,[])
+fastSI (x:xs) _ [] = let (i,v) = fastSI xs 0 [] in (i, x : v)
+fastSI [] _ (y:ys) = let (i,v) = fastSI [] 0 ys in (i, y : v)
+fastSI x@(x1:xs) lenX y@(y1:ys) = if x1 <= y1 then let (i,v) = fastSI xs (lenX-1) y in (i, x1 : v)
+                                              else let (i,v) = fastSI x lenX ys in (i+lenX, y1 : v)
+inv :: [Int] -> Int
+inv x = let (i,_) = fastCI fastSI x in i
 
-splitInversions :: Ord a => [a] -> [a] -> Int -> [a]
-splitInversions [] [] i = (i,[])
-splitInversions (x:xs) [] i = let (i',v) = splitInversions xs [] i in x :
-splitInversions [] (y:ys) i = y : splitInversions [] ys (i+1)
-splitInversions x@(x1:xs) y@(y1:ys) i = if x1 <= y1 then (_,x1 : splitInversions xs y i)
-                                                    else (_,y1 : splitInversions x ys (i+1))
+run :: String -> String
+run x = show $ inv $ map (read :: String -> Int) $ lines $ x
 
 main :: IO ()
-main = undefined
+main = interact run
