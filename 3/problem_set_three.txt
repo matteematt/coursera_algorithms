@@ -1,0 +1,121 @@
+1.
+0 < a < .5
+
+For a randomly chosen pivot element, what is the probability that the length of the smaller split is
+>= a times the size of the original array
+
+For a = 0
+100% ?
+Because the smallest split will be at least more than 0 as long as the pivot is not Z_0
+
+For a = .5
+~0% ?
+Because the smallest split can only be equal to 50 % of the array when the pivot is Z_(n/2)
+
+For a = .25
+75%?
+Because the smallest split will be more than a quarter if the pivot is anywhere from Z_(n/4) to Z_(n)
+
+=> 1 - 2 * a (not too confident on this)
+=> Correct
+
+2.
+For an array of length k the recursive calls generate arrays between ak and (1-a)k, where a is the
+same fixed constant as the previous question. How many recursive calls can you occur before you hit
+the base case? Express you answer as a range of possible values of d
+
+Could be as low as zero because you could try and sort an array of length 1 or 0?
+
+=> 0 < d < - log(n)/log(a)
+=> Incorrect - Note there is also a non-trivial lower bound on the minimum number of recursive calls
+before triggering the base case
+
+Guessing as it has the same term as q 1
+=> -log(n)/log(1-2*a)
+
+3.
+Defined the possible range of recursion depth of quicksort
+
+Maximum theta(n) because the pivot could be the lowest or highest unsorted value every time which
+would require recursion for every value in the array
+
+Minimum theta(log(n)), if the pivot is zi/2 every time then the arrays will be split like merge sort
+which is log(n) depth
+
+=> Minimum Theta(log(n)); Maximum: Theta(n)
+=> Correct - The best case is when the algorithm always picks the median as a pivot, in which case
+the recusion is essentiall identical to that in merge sort. In the worse case the min or max is
+always chosen as the pivot resulting in linear depth
+
+4.
+For a group of k people with birthdays uniformly across 365 days. What is the smallest value of k
+such that the expected number of pairs of distinct people with the same birthday is at least one
+
+Indicator I_xy denotes that persons x and y share the same birthday
+
+I_xy = 1/365
+
+For two people then
+
+for i in range (0,1):
+	for j in range (0,1):
+		when i /= j:
+			I_xy = 1/365
+
+1 >= k^2 1/365
+
+365 <= k^2
+
+k >= 19.10
+
+=> 20
+=> Incorrect - Double check how many inidicator random variables you have. Are you double-counting
+pairs?
+
+For two people then => 1/365
+For three people then => 2/365 + 2/365
+For four people then => 3/365 + 3/365 + 3/365
+for n people then => n2/365
+
+	=> This gives me the same answer as last time
+
+For two people then => 1/365 * 1/365
+For three people then => 1/365 * 1/365 + 1/365 * 1/135 + 1/365 + 1/365 = 3/365^2
+For n peole then = n / 365^2
+
+For each person 1/365 so
+=> 366
+=> Incorrect. This is the minimum k such that the probability of having a duplicate birthday is
+100%. But for the question asked here, the correct answer is much smaller
+
+Probability of sharing a birthday = 1/365
+Pairs of n people given by nC2 = n(n-1)/2
+1 < n(n-1)/2*365
+730 = n^2 - n
+
+1+-sqrt(1-4*1*-730)/2*1
+1+-sqrt(2921)/2
+=> 27.5231...
+=> 28
+
+5.
+Let X1, X2, X3 denote the outcomes of three rolls of a six-sided die (uniform distribution).
+Let Y = X1 * X2
+Let Z = X2 * X3
+
+Which of the following statements are correct?
+Y and Z are independent, but E[Y*Z] /= E[Y] * E[Z]
+Y and Z are not independent, and E[Y*Z] /= E[Y] * E[Z]
+Y and Z are independent, and E[Y*Z] = E[Y] * E[Z]
+Y and Z are not independent, but E[Y*Z] = E[Y] * E[Z]
+
+E[Xn] = 3.5
+
+=> Y and Z == 12.25
+
+=> Y and Z are independent, but E[Y*Z] /= E[Y] * E[Z]
+=> Incorrect. This is impossible because the expectation of a product of independent random
+variables is always the product of their expection
+
+=> Y and Z are independent, and E[Y*Z] = E[Y] * E[Z]
+=> Correct
