@@ -32,6 +32,9 @@ before triggering the base case
 
 Guessing as it has the same term as q 1
 => -log(n)/log(1-2*a)
+=> Incorrect
+
+=> By process of elimination answer is -log(n)/log(a) <= d <= -log(n)/log(1-a)
 
 3.
 Defined the possible range of recursion depth of quicksort
