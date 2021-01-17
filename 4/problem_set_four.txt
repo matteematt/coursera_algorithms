@@ -1,0 +1,94 @@
+Problem Set 4
+
+1. How many different minimum cuts are there in a tree with n nodes (n-1 edges)
+
+For a tree with 4 nodes there are three edges, and each edge is a minimum cut
+
+=> n-1
+Correct - Feedback: EAch edge defined a distinct minimum cu;t (with one crossing edge).
+
+
+2. Let "output" denote the cut output by Karger's min cut algorithm on a given connected graph with
+n vertices, and let p = 1 / nC2. Which of the following statements are true:
+
+There exists a graph G with no nodes and a min cut (A,B) of G such that
+Pr[out=(A,B)] <= p
+=> True by the lower bound, such as when considering an n-cycle
+Correct - "Take G to be an n-cycle. How many different minimum cuts does it have?"
+
+For every graph G with no nodes and every min cut (A,B) of G,
+Pr[out=(A,B)] >= p
+=> True by the upper bound of contraction algorithm (without repeated trials)
+Correct - "This is exactly what was proven in the lecture"
+
+For every graph G with n nodes and every min cut (A,B),
+Pr[out=(A,B)] <= p
+
+For every graph G with n nodes, there exists a min cut (A,B) such that
+Pr[out=(A,B)] <= p
+
+For every graph G with n nodes, there exists a min cut (A,B) of G such that
+Pr[out=(A,B)] >= p
+
+Missing one or more correct values
+
+
+3. Let .5 < a < 1 be some constant. Suppose you are looking for the median element in an array using
+RANDOMIZED SELECT. What is the probability that after the first iteration the size of the subarray
+in which the element you are looking for lies is <= a times the original array?
+
+For a = 0.5
+P >= 0.5
+
+For a = 1
+P = 1 because the next array is defo less than or equal to the current array size
+
+=> 2*a - 1
+Correct - Precisely, as the pivot selected should lie between 1-a and a times the original array
+
+4. Let 0 < a < 1 be a constant, independent of n. Consider an execution of RSelect in which you
+manage to throw out at least a 1-a fraction of the elements before you recurse. What is the maximum
+number of recursive calls you'll make before terminating?
+
+For a = 1
+You have no guarantee to get rid of any values any recurse (the worst case)
+For n values you could end up doing n recursive calls, so the term is dominated by log n
+
+For a = 0
+You are getting rid of the entire array (must be choosing the median immediately) so no recursion
+
+For a = 0.5
+
+=> -log(n)/log(a)
+Correct - Equivalently, log_(1/a)(n)
+
+5. The minimum s-t cut problem is the following: The input is an undirected graph, and two distint
+vertices of the graph are labelled "s" and "t". The goal is to compute the minimum cut (i.e, fewest
+number of crossing edges) that satisfies the property that s and t are on different sides of the
+cut.
+Suppose someone gives you a subroutine for this s-t minimum cut problem via an API. Your job is to
+solve the original minimum cut problem (the one discussed in the lectures), when all you can do is
+invoke the given min s-t cut subroutine. (That is, the goal is to reduce the min cut problem to the
+min s-t cut problem)
+Now suppose you are given an instance of the minimum cut problem -- that is, you are given an
+undirected graph (with no specially labelled vertices) and need to compute the minimum cut. What is
+the minimum number of times that you need to call the given min s-t cut subroutine to guarantee that
+you'll find a min cut of the given graph?
+
+For all real numbers x, 1+x <= e^x
+
+Pr[all trials fail] <= (1 - (1/n^2))^N
+Therefore:
+Pr[all trials fail] <= (e^(-1/n^2))^N
+
+Choose N such that
+
+1 <= (e^(-1/n^2))^N
+
+# log(1) <= log(e^-1/n^2)
+# 0 <= log
+
+=> 2^n because it needs to be more than 1 and n^2 was only giving 1/e chance of success
+Incorrect - you can definitely do better than that!
+
+=> Not nC2 either
