@@ -27,6 +27,8 @@ object Main {
         case (ni1,ni2) =>
           ni1.es.contains(ni2.n) && ni2.es.contains(ni1.n)
       }
+      // println(intersectPairs)
+      // System.exit(0)
     }
 
     println(intersectPairs)
@@ -34,17 +36,48 @@ object Main {
     (ni1.n,ni2.n)
   }
 
-  def karger(nodeList: List[NodeItem]) = {
-    // Loop n times
+  def mergeNodePair(nodeList: List[NodeItem]) = {
+    val ni1 :: ni2 :: tail = nodeList
+    val mergedName = ni1.n + "|" + ni2.n
+    val mergedEdgeList = ni1.es.appendedAll(ni2.es).map {
+      x => if (x == ni1.n || x == ni2.n) mergedName else x
+    }.distinct.filter { _ != mergedName }
+    NodeItem(mergedName, mergedEdgeList)
+  }
 
-    // While there are more than two nodes left:
+  def karger(nl: List[NodeItem]) = {
+    def go() = {
+      var nodeList = nl
+      // While there are more than two nodes left:
+      // Reduce the edge and update the graph, deleting loops but not parallel edges
+      // The make up of those two nodes are the two graphs, with the min cut being the edges between
+      // Final answer is the lowest values after all the loop
+      while (nodeList.length > 2) {
+        // Choose an edge to reduce
+        val chosenNodes = chooseNodes(nodeList)
+        println(chosenNodes)
+        val (chosen,rest) = nodeList.partition
+          { case NodeItem(n,_) => n == chosenNodes._1 || n == chosenNodes._2 }
+        val merged = mergeNodePair(chosen)
+        val updatedRest = rest.map {
+          case NodeItem(n,es) =>
+            val updatedEdges = es.map
+              { x => if (x == chosenNodes._1 || x == chosenNodes._2) merged.n else x }
+            NodeItem(n, updatedEdges)
+        }
+        nodeList = updatedRest.appendedAll(List(merged))
+        println(nodeList)
+      }
+      nodeList.flatMap(_.es).length
+    }
 
-    // Choose an edge to reduce
-    val chosenNodes = chooseNodes(nodeList)
-    println(chosenNodes)
-    // Reduce the edge and update the graph, deleting loops but not parallel edges
-    // The make up of those two nodes are the two graphs, with the min cut being the edges between
-    // Final answer is the lowest values after all the loop
+    var lowest = 100000000
+    for (i <- 0 to (nl.length)) {
+      println(s"Run $i of ${nl.length}")
+      val minCut = go()
+      lowest = if (minCut < lowest) minCut else lowest
+    }
+    lowest
   }
 
   def main(args: Array[String]): Unit = {
@@ -52,6 +85,7 @@ object Main {
     println(inputLines.mkString("\n"))
 
     println("\nRun:\n")
-    karger(getNodeList("test"))
+    // val minCut = karger(getNodeList("test"))
+    println(karger(getNodeList("input")))
   }
 }
