@@ -92,3 +92,7 @@ Choose N such that
 Incorrect - you can definitely do better than that!
 
 => Not nC2 either
+
+=> n-1
+Correct - Call an arbitrary vertex s, let t range over all the other n-1 vertices, and return the
+best of the s-t min cuts found.
