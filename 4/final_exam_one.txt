@@ -1,0 +1,136 @@
+Divide and Conquer Algorithms
+Final exam
+
+1. Recall the Partition subroutine that we used in both Quicksort and RSelect. Suppose that the
+following array had just been partitioned around some pivot element:
+
+3, 1, 2, 4, 5, 8, 7, 6, 9
+
+Which of these elements could have possibly been the pivot element (there could be more than one)
+
+9 Y
+3
+2
+5 Y
+4 Y
+
+The answers are values where all numbers to the left are smaller and all to the right are larger
+
+
+2. Here is an array of ten integers
+5 3 8 9 1 7 0 2 6 4
+Suppose we run MergeSort on this array. What is the number in the 7th position of the partially
+sorted array after the outermost two recursive calls have completed (i.e. just before the very last
+Merge step)? (We are counting the indexes as starting at 1)
+
+The numbers on the RHS
+7 0 2 6 4
+get sorted to
+0 2 4 6 7
+
+=> number 2
+
+
+3. What is the asymptotic worst-case running time of MergeSort, as a function of the input array
+length n?
+
+It always splits in half, no randomly selecting pivots etc.
+=> Theta(nlog(n))
+
+
+4. What is the asymptotic running time of Randomised QuickSort on arrays of length n, in expectation
+(over the choice of random pivots) and in the worst case, respectively?
+
+Expected case Theta(nlogn) as long as you are doing at least 25-75 splits
+Worst case is if you pick the smallest or largest number every time, in which case you will get n^2
+
+=> Theta(nlogn) [expected] and Theta(n^2) [worst case]
+
+
+5. Let f and g be two increasing functions, defined on the natural number, with f(1),g(1)>=1
+
+Assume that f(n)=O(g(n)). Is 2^f(n) = O(2^g(n))? (Multiple answers may be correct)
+
+Maybe, maybe not (depends on the functions f and g) - True
+Always
+Never
+Yes if f(n) <= g(n) for all sufficiently large n - True
+
+f(n) is upper bounded by g(n)
+
+
+6. Let 0 < a < 0.5 be some constant. Consider running the partition subroutine on an array with no
+duplicate elements and with the pivot element chosen uniformly at random (as in QuickSort and
+RSelect). What is the probability that, after partitioning, both subarrays (elements to the left of
+the pivot, and elements to the right of the pivot) have a size of at least a times that of the
+original array?
+
+Let a = 0.5
+~0 chance, as that would mean the pivot was exactly the median
+
+Let a = 0
+100% chance as the arrays
+
+=> 1-2a
+
+7. Suppose that a randomised algorithm succeeds (e.g. correctly computes the minimum cut of a graph)
+with a probability p (with 0<p<1). Let e be a small positive number < 1
+How many independent times do you need to run the algorithm to ensure that, with a probability of at
+least 1-e, at least one trial succeeds?
+
+=> log(e)/log(1-p)
+
+As p gets larger there is more chance, same for e
+
+
+8. Suppose you are given k sorted arrays, each with n elements, and you want to combine them into a
+single array of kn elements. Consider the following approach: Divide the k arrays into k/2 pairs of
+arrays, and use the Merge subroutine from MergeSort lectures to combine each pair. Now you are left
+with k/2 sorted arrays, each with 2n elements. Repeat this approach until you have a single array
+with kn elements. What is the running time of this procedure, as a function of k and n?
+
+k=4
+n=2
+
+1 5
+2 23
+12 15
+22 22
+
+1 2 5 23
+12 15 22 22
+
+k=2
+n=4
+
+2 3 5 12 15 22 22 23
+
+=> Theta(nklogk)
+
+
+9. Running time of Strassen's matrix multiplication algorithm: Suppose that the running time of an
+algorithm is governed by the recurrence T(n) = 7*T(n/2) + n^2. What is the overall asymptotic
+running time (i.e, the value of T(n))?
+
+T(n) = aT(n/b) + d
+
+a=7
+b=2
+d=2
+
+a>b^d case 3
+
+O(n^log_b(a))
+
+=> O(n^log_2(7))
+
+
+10. Recall the Master method and its three parameters a,b,d. Which of the following is the best
+interpretation of b^d, in the context of a divide-and-conquer algorithms?
+
+=> The rate at which the number of sub problems is growing (per level of recursion)
+
+All correct except the final answer
+=> 90% and pass
+
+=> b&d is the rate at which work work rate is shrinking per recursion (rate of work shrinkage)
