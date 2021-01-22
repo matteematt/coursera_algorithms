@@ -9,6 +9,8 @@ that the in-degree of a vertex is the number of edges that enter it.)
 At worst case we would need to explore every single edge in the graph
 
 => Theta(m)
+=> Correct - Without explicitly maintaining a list of incoming edges, you might have to scan through
+all the edges to identify the incoming arcs
 
 2. Consider the following problem: given an undirected graph G with n vertices and m edges, and two
 nodes s and t, does there exist at least one s-t path?
@@ -21,6 +23,11 @@ edges.)
 Having to traverse the whole matrix
 
 => Theta(m*n)
+-> Incorrect, You can solve this faster
+
+=> Theta(m+n*log(n))
+-> Incorrect m=O(n), this would imply that you're solving the problem despite looking at only a tiny
+fraction of the adjacency matrix
 
 3. This problem explores the relationship between two definitions about graph distances. In this
 problem we consider only graphs that are undirected and connected. The diameter of a graph is the
@@ -36,6 +43,15 @@ r >- d/2
 r >= d
 r <= d/2
 
+Correct, but there are more answers
+(By the definitions, l(s) <= d for every single choice of s
+
+Also
+=> r >= d/2
+Correct. Let c minimise l(s) over all nodes s. Since every pair of vertices s and t have paths to c
+with at most r edges, stitching these paths together yields an s-t with only 2r edges; of course,
+the shortest path s-t is only shorter
+
 4. Consider our algorithm for computing a topological ordering that is based on depth-first search
 (i.en NOT the "straightforward solution"). Suppose we run this algorithm on a graph G that is NOT
 directed acyclic. Obviously it won't computer a topological order (since none exist). Does it
@@ -43,3 +59,23 @@ compute an ordering that minimises the number of edges that go backwards?
 For example, consider the four-node graph with six directed edges (s,v)(s,w)(v,w)(v,t)(w,t)(t,s).
 Suppose the vertices are ordered s,v,w,t. There is one backwards arc, the (t,s) arc. No ordering of
 the vertices has backwards arcs, and some have more than one
+
+=> If and only if the graph has a directed cycle, if not directed then there is no backward node. It
+does usually because it can only traverse forward
+
+Incorrect - The algorithm might get lucky even if the graph is not a directed cycle
+
+=> Sometimes yes, sometimes no
+Correct
+
+5. Upon adding one extra edge to a directed graph G, the number of strongly connected components...
+
+It could decrease because you could connect two SCC which are currently only connected by one edge,
+connecting in the other direction would collapse them into one SCC
+It could remain the same because you could add an extra edge inside a SCC which would not change the
+number of SCC
+It could decrease by more than one. Imagine many SCCs which are connecting as a path using one way
+edges. Using one more to create a loop would turn it into a cycle without any SCCs
+
+=> ...could remain the same for some graphs G
+Correct - for example it might already be strongly connected
