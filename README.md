@@ -9,3 +9,4 @@ Each directory contains the working out for each week on the course
 	 skill-set due to use of in place memory switching)
 4. Scala Karger Min Cut (not using haskell as requires randomness which I haven't used in Haskell
 	 yet)
+5. Haskell Kosaraju Strong Connected Components (SCC) finder
