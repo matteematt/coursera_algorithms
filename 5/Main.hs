@@ -13,9 +13,17 @@ type Graph = M.Map Int ([Int],[Int])
 
 testGraph = buildGraph testData
 
+kosaraju :: Graph -> M.Map Int [Int]
+kosaraju graph = let visited = M.fromList $ zip [1..(length $ M.keys graph)] (repeat False)
+                     ordering = kosarajuOrdering graph visited
+                     leaderMap = M.fromList $ zip [1..(length $ M.keys graph)] (repeat [])
+                     (_,lm) = foldl' (\(vis,lm) edge -> go2 graph vis edge lm edge) (visited,leaderMap) ordering
+                  in lm
+
+
 -- node => finish position order
 visited :: M.Map Int Bool
-visited = M.fromList $ zip [1..((length $ M.keys testGraph) - 1)] (repeat False)
+visited = M.fromList $ zip [1..(length $ M.keys testGraph)] (repeat False)
 
 -- Get order
 
@@ -25,21 +33,49 @@ visited = M.fromList $ zip [1..((length $ M.keys testGraph) - 1)] (repeat False)
 -- Recurse on neighbours
 -- Mark this node as finished, with the ordering
 
-
-ordering = reverse
-           $ (\(_,ord) -> ord)
-           $ foldl' (\(vis,ord) edge -> go testGraph vis ord edge) (visited,[])
-           $ M.keys testGraph
+-- revesrse?
+kosarajuOrdering :: Graph -> M.Map Int Bool -> [Int]
+kosarajuOrdering graph visisted =
+  (\(_,ord) -> ord)
+  $ foldl' (\(vis,ord) edge -> go1 testGraph vis ord edge) (visited,[])
+  $ reverse
+  $ M.keys graph
 
 -- Returns the ordering backwards
-go :: Graph -> M.Map Int Bool -> [Int] -> Int -> (M.Map Int Bool,[Int])
-go graph visisted order curr =
-  if  (M.lookup curr visisted) == Just True
-     then (visisted,order)
-     else let visisted' = M.insert curr True visisted
+go1 :: Graph -> M.Map Int Bool -> [Int] -> Int -> (M.Map Int Bool,[Int])
+go1 graph visited order curr =
+  if (M.lookup curr visited) == Just True
+     then (visited,order)
+     else let visited' = M.insert curr True visited
               neighbours = bkwdNeighbours graph curr
-              (vis,ord) = foldr (\next (vis,ord) -> go graph vis ord next) (visisted',order) neighbours
+              (vis,ord) = foldr (\next (vis,ord) -> go1 graph vis ord next) (visited',order) neighbours
            in (vis,curr : ord)
+
+-- Get SCC
+
+-- Init map for node leaders and if visited
+-- For each unvisited node (so we skip checked nodes)
+-- Mark node as visited, set its leader in the leader map
+-- get neighbours (go forwards using TO edges)
+-- Recurse on neighbours
+
+-- leader => [nodes]
+leaderMap :: M.Map Int [Int]
+leaderMap = M.fromList $ zip [1..(length $ M.keys testGraph)] (repeat [])
+
+go2 :: Graph -> M.Map Int Bool -> Int -> M.Map Int [Int] -> Int -> (M.Map Int Bool,M.Map Int [Int])
+go2 graph visited leader leaderMap curr =
+  if (M.lookup curr visited) == Just True
+     then (visited,leaderMap)
+     else let visited' = M.insert curr True visited
+              leaderMap' = mapValTransform leaderMap leader (\xs -> curr : xs)
+              neighbours = fwdNeighbours graph curr
+              (vis,lm) = foldr (\next (vis,lm) -> go2 graph vis leader lm next) (visited',leaderMap') neighbours
+           in (vis,lm)
+
+groupedLeaders = (\(_,lm) -> lm)
+                 $ foldl' (\(vis,lm) edge -> go2 testGraph vis edge lm edge) (visited,leaderMap)
+                 $ kosarajuOrdering testGraph visited
 
 -- Graph query functions
 fwdNeighbours :: Graph -> Int -> [Int]
@@ -87,3 +123,5 @@ testData = "1 3\n\
   \7 9\n\
   \8 7\n\
   \9 8"
+
+
