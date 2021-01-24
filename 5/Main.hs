@@ -7,6 +7,9 @@ import qualified Data.Map as M
 main :: IO ()
 main = undefined
 
+run :: String -> [Int]
+run xs = take 5 $ reverse $ sort $ map (\(_,xs) -> length xs) $ M.toList $ kosaraju $ buildGraph xs
+
 -- node => ([to],[from])
 -- keeping to and from allows us to traverse the map backwards without copying it
 type Graph = M.Map Int ([Int],[Int])
@@ -44,12 +47,13 @@ kosarajuOrdering graph visisted =
 -- Returns the ordering backwards
 go1 :: Graph -> M.Map Int Bool -> [Int] -> Int -> (M.Map Int Bool,[Int])
 go1 graph visited order curr =
+  trace ("Looking at " ++ show curr) (
   if (M.lookup curr visited) == Just True
      then (visited,order)
-     else let visited' = M.insert curr True visited
-              neighbours = bkwdNeighbours graph curr
-              (vis,ord) = foldr (\next (vis,ord) -> go1 graph vis ord next) (visited',order) neighbours
-           in (vis,curr : ord)
+     else let visited' = trace ("visited " ++ show curr ) (M.insert curr True visited)
+              neighbours = trace (mconcat [show curr,"'s neighbours are ", show $ bkwdNeighbours graph curr]) (bkwdNeighbours graph curr)
+              (vis,ord) = foldr (\next (vis,ord) -> trace (mconcat ["Going to ",show next," from ",show curr]) (go1 graph vis ord next)) (visited',order) neighbours
+           in (vis,curr : ord))
 
 -- Get SCC
 
@@ -110,7 +114,7 @@ buildGraph x = let adjacencyList =
                      map ((\(a:b:_) -> (a,b)) . map (read :: String -> Int) . words) $ lines $ x
                    nodesCount = length $ group $ sort $ map (\(x,_) -> x) adjacencyList
                    nodeList = M.fromList $ zip [1..nodesCount] (repeat ([],[]))
-                in foldr (\nodeEdge m -> addEdge m nodeEdge) nodeList adjacencyList
+                in foldl' (\m nodeEdge -> addEdge m nodeEdge) nodeList adjacencyList
 
 testData = "1 3\n\
   \2 1\n\
@@ -124,4 +128,22 @@ testData = "1 3\n\
   \8 7\n\
   \9 8"
 
+test2 = "1 2\n\
+  \10 11\n\
+  \10 7\n\
+  \8 11\n\
+  \11 9\n\
+  \2 3\n\
+  \2 4\n\
+  \3 1\n\
+  \3 8\n\
+  \3 9\n\
+  \4 5\n\
+  \4 6\n\
+  \5 7\n\
+  \6 5\n\
+  \7 6\n\
+  \8 10\n\
+  \8 6\n\
+  \9 8"
 
