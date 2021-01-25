@@ -50,7 +50,7 @@ go1 graph visited order curr =
      then (visited,order)
      else let visited' = M.insert curr True visited
               neighbours = bkwdNeighbours graph curr
-              (vis,ord) = foldr (\next (vis,ord) -> go1 graph vis ord next) (visited',order) neighbours
+              (vis,ord) = foldl' (\(vis,ord) next -> go1 graph vis ord next) (visited',order) neighbours
            in (vis,curr : ord)
 
 -- Get SCC
@@ -72,7 +72,7 @@ go2 graph visited leader leaderMap curr =
      else let visited' = M.insert curr True visited
               leaderMap' = mapValTransform leaderMap leader (\xs -> curr : xs)
               neighbours = fwdNeighbours graph curr
-              (vis,lm) = foldr (\next (vis,lm) -> go2 graph vis leader lm next) (visited',leaderMap') neighbours
+              (vis,lm) = foldl' (\(vis,lm) next -> go2 graph vis leader lm next) (visited',leaderMap') neighbours
            in (vis,lm)
 
 groupedLeaders = (\(_,lm) -> lm)
@@ -112,7 +112,7 @@ adjacencyList = map ((\(a:b:_) -> (a,b)) . map (read :: String -> Int) . words) 
 
 buildGraph x = let adjacencyList =
                      map ((\(a:b:_) -> (a,b)) . map (read :: String -> Int) . words) $ lines $ x
-                   nodesCount = length $ group $ sort $ foldr (\(a,b) xs -> a : b : xs) [] adjacencyList
+                   nodesCount = length $ group $ sort $ foldl' (\xs (a,b) -> a : b : xs) [] adjacencyList
                    nodeList = M.fromList $ zip [1..nodesCount] (repeat ([],[]))
                 in foldl' (\m nodeEdge -> addEdge m nodeEdge) nodeList adjacencyList
 
