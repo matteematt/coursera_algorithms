@@ -5,7 +5,7 @@ import Data.List
 import qualified Data.Map as M
 
 main :: IO ()
-main = undefined
+main = interact (\x -> show $ run x)
 
 run :: String -> [Int]
 run xs = take 5 $ reverse $ sort $ map (\(_,xs) -> length xs) $ M.toList $ kosaraju $ buildGraph xs
@@ -14,7 +14,7 @@ run xs = take 5 $ reverse $ sort $ map (\(_,xs) -> length xs) $ M.toList $ kosar
 -- keeping to and from allows us to traverse the map backwards without copying it
 type Graph = M.Map Int ([Int],[Int])
 
-testGraph = buildGraph testData
+testGraph = buildGraph testCase3
 
 kosaraju :: Graph -> M.Map Int [Int]
 kosaraju graph = let visited = M.fromList $ zip [1..(length $ M.keys graph)] (repeat False)
@@ -36,24 +36,22 @@ visited = M.fromList $ zip [1..(length $ M.keys testGraph)] (repeat False)
 -- Recurse on neighbours
 -- Mark this node as finished, with the ordering
 
--- revesrse?
 kosarajuOrdering :: Graph -> M.Map Int Bool -> [Int]
 kosarajuOrdering graph visisted =
   (\(_,ord) -> ord)
-  $ foldl' (\(vis,ord) edge -> go1 testGraph vis ord edge) (visited,[])
+  $ foldl' (\(vis,ord) edge -> go1 graph vis ord edge) (visited,[])
   $ reverse
   $ M.keys graph
 
 -- Returns the ordering backwards
 go1 :: Graph -> M.Map Int Bool -> [Int] -> Int -> (M.Map Int Bool,[Int])
 go1 graph visited order curr =
-  trace ("Looking at " ++ show curr) (
   if (M.lookup curr visited) == Just True
      then (visited,order)
-     else let visited' = trace ("visited " ++ show curr ) (M.insert curr True visited)
-              neighbours = trace (mconcat [show curr,"'s neighbours are ", show $ bkwdNeighbours graph curr]) (bkwdNeighbours graph curr)
-              (vis,ord) = foldr (\next (vis,ord) -> trace (mconcat ["Going to ",show next," from ",show curr]) (go1 graph vis ord next)) (visited',order) neighbours
-           in (vis,curr : ord))
+     else let visited' = M.insert curr True visited
+              neighbours = bkwdNeighbours graph curr
+              (vis,ord) = foldr (\next (vis,ord) -> go1 graph vis ord next) (visited',order) neighbours
+           in (vis,curr : ord)
 
 -- Get SCC
 
@@ -109,13 +107,16 @@ pushLHS x (l,r) = (x:l,r)
 pushRHS :: Int -> ([Int],[Int]) -> ([Int],[Int])
 pushRHS x (l,r) = (l,x:r)
 
+adjacencyList = map ((\(a:b:_) -> (a,b)) . map (read :: String -> Int) . words) $ lines $ testCase3
+
 
 buildGraph x = let adjacencyList =
                      map ((\(a:b:_) -> (a,b)) . map (read :: String -> Int) . words) $ lines $ x
-                   nodesCount = length $ group $ sort $ map (\(x,_) -> x) adjacencyList
+                   nodesCount = length $ group $ sort $ foldr (\(a,b) xs -> a : b : xs) [] adjacencyList
                    nodeList = M.fromList $ zip [1..nodesCount] (repeat ([],[]))
                 in foldl' (\m nodeEdge -> addEdge m nodeEdge) nodeList adjacencyList
 
+-- Confirmed working
 testData = "1 3\n\
   \2 1\n\
   \3 2\n\
@@ -128,6 +129,7 @@ testData = "1 3\n\
   \8 7\n\
   \9 8"
 
+-- Confirmed working
 test2 = "1 2\n\
   \10 11\n\
   \10 7\n\
@@ -146,4 +148,47 @@ test2 = "1 2\n\
   \8 10\n\
   \8 6\n\
   \9 8"
+
+-- Confirmed working
+testCase1 = "1 4\n\
+\2 8\n\
+\3 6\n\
+\4 7\n\
+\5 2\n\
+\6 9\n\
+\7 1\n\
+\8 5\n\
+\8 6\n\
+\9 7\n\
+\9 3"
+
+-- Confirmed working
+testCase2 = "1 2\n\
+  \2 6\n\
+  \2 3\n\
+  \2 4\n\
+  \3 1\n\
+  \3 4\n\
+  \4 5\n\
+  \5 4\n\
+  \6 5\n\
+  \6 7\n\
+  \7 6\n\
+  \7 8\n\
+  \8 5\n\
+  \8 7"
+
+-- Not working
+-- Doesn't build the correct graph
+-- Fixed issue
+testCase3 = "1 2\n\
+\2 3\n\
+\3 1\n\
+\3 4\n\
+\5 4\n\
+\6 4\n\
+\8 6\n\
+\6 7\n\
+\7 8"
+
 
