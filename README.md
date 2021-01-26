@@ -10,3 +10,4 @@ Each directory contains the working out for each week on the course
 4. Scala Karger Min Cut (not using haskell as requires randomness which I haven't used in Haskell
 	 yet)
 5. Haskell Kosaraju Strong Connected Components (SCC) finder
+6. Scala Dijkstra (so I can use an in memory efficient heap implementation)

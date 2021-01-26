@@ -1,0 +1,96 @@
+Problem sheet 6
+
+1. Consider a directed graph with distinct and non-negative edge lengths and a source vertex s. Fix
+a destination vertex t, and assume that the graph contains at least one s-t path. Which of the
+following statements are true (maybe more than one)
+
+The shortest (i.e. minimum-length) s-t path might have as many as n-1 edges, where n is the number
+of vertices
+=> True, for example they could all be 1 and the other edge could be 100000000
+
+The shortest s-t path must exclude the maximum-length edge of G
+=> False, the maximum length edge could be the only edge which would be on the shortest path
+
+There is a shortest s-t path with no repeated vertices (i.e a "loopless" path")
+=> True, traversing a loop would only extend the path
+
+The shortest s-t path must include the minimum-length edge of G
+=> False, the minimum length edge could be in the longest s-t path
+
+==> Correct
+
+2. Consider a directed graph G with a source vertex s, a destination t, and a non-negative edge
+length. Under what conditions in the shortest s-t path guaranteed to be unique?
+
+=> When all edge lengths are distinct powers of 2.
+
+=> Correct. Two sums of distinct powers of two cannot be the same (imagine the numbers are written
+in binary)
+
+3. Consider a directed graph G=(V,E) and a source vertex s with the following properties: edges that
+leave the source vertex s have an arbitrary (possibly negative) lengths; all other edge lengths are
+non-negative; and there are no edges from any other vertex to the source s. Does Dijkstra's
+shortest-path algorithm correctly compute shortest-path distances 9from s) in this graph
+
+If the edges are not negative it will work fine
+=> Maybe, Maybe Not (depends on the graph)
+
+=> Incorrect
+
+Try: Only if we add the assumption that G contains no directed cycles with negative total weight
+
+=> Incorrect. The hypothesis in the problem statment already imply there is no such cycle
+
+Try Always
+
+
+4. Consider a directed graph G and a source vertex s. Suppose G has some negative edge lengths but no
+negative cycles, meaning G does not have a directed cycle in which the sum of the edge lengths is
+negative. Suppose you run Dijkstra's algorithm on G (with a source s). Which of the following
+statements is true (maybe more than one)
+
+Dijkstra's algorithm always terminates, and in some cases the path it computes with be the correct
+shortest paths from s to all other vertices
+=> True, just because there are negative edges it doesn't mean it can't explore all of the edges
+
+Dijkstra's algorithm might loop forever.
+=> False, it would contradict the above
+
+Dijkstra's algorithm always terminates, but in some cases the paths it computes will not be the
+shortest paths from s to all other vertices
+=> True, Dijkstra's algorithm doesn't always find the shortest path in a graph with negative edges
+
+It's impossible to run Dijkstra's algorithm on a graph with negative edge lengths.
+=> False, it would contradict the above
+
+=> Correct. Non-negativity of the edges lengths was used in the correctness proof of Dijkstra's
+algorithm; with negative edge lengths, the algorithm is no longer correct in general
+
+
+5. Consider a directed graph G and a source vertex s. Suppose G contains a negative cycle (a
+directed cycle in which the sum of the edges lengths is negative) and also a path from s to this
+cycle. Suppose you run Dijkstra's algorithm on G (with source s). Which of the following statements
+are true? (Maybe more than one)
+
+Dijkstra's algorithm might loop forever.
+=> True, the algorithm would potentially loop around the negative cycle forever
+
+Dijkstra's algorithm always terminates, and in some cases the path it computes with be the correct
+shortest paths from s to all other vertices
+=> False, it would contradict the above
+
+Dijkstra's algorithm always terminates, but in some cases the paths it computes will not be the
+shortest paths from s to all other vertices
+=> False, it would contradict the above
+
+It's impossible to run Dijkstra's algorithm on a graph with negative edge lengths.
+=> False, it may find path s-t without finding the negative cycle
+
+=> Incorrect. The algorithm always halts after n-1 iterations, where n is the number of vertices
+
+Try the same two answers as the previous question
+
+One was correct one was not. "Dijkstra's algorithm always terminates, and in some cases the paths it
+computes will be the correct shortest paths from s to all other vertices" is wrong.
+=> When there is a negative cycle reachable from s, there is no shortest path from s from any vertex
+on cycle (every path can be made shorter by going around the cycle additional times)
