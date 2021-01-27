@@ -11,13 +11,14 @@ of vertices
 The shortest s-t path must exclude the maximum-length edge of G
 => False, the maximum length edge could be the only edge which would be on the shortest path
 
-There is a shortest s-t path with no repeated vertices (i.e a "loopless" path")
+There is a shortest s-t path with no repeated vertices (i.e a "loop-less" path")
 => True, traversing a loop would only extend the path
 
 The shortest s-t path must include the minimum-length edge of G
 => False, the minimum length edge could be in the longest s-t path
 
 ==> Correct
+
 
 2. Consider a directed graph G with a source vertex s, a destination t, and a non-negative edge
 length. Under what conditions in the shortest s-t path guaranteed to be unique?
@@ -26,6 +27,7 @@ length. Under what conditions in the shortest s-t path guaranteed to be unique?
 
 => Correct. Two sums of distinct powers of two cannot be the same (imagine the numbers are written
 in binary)
+
 
 3. Consider a directed graph G=(V,E) and a source vertex s with the following properties: edges that
 leave the source vertex s have an arbitrary (possibly negative) lengths; all other edge lengths are
@@ -39,9 +41,12 @@ If the edges are not negative it will work fine
 
 Try: Only if we add the assumption that G contains no directed cycles with negative total weight
 
-=> Incorrect. The hypothesis in the problem statment already imply there is no such cycle
+=> Incorrect. The hypothesis in the problem statement already imply there is no such cycle
 
 Try Always
+=> Correct. One approach is to see that the proof of correctness from the video still works. A
+slicker solution is to notice that adding a positive constant M to all edges incident to s increases
+the length of every s-v path by exactly M, and thus preserves the shortest path.
 
 
 4. Consider a directed graph G and a source vertex s. Suppose G has some negative edge lengths but no
@@ -94,3 +99,6 @@ One was correct one was not. "Dijkstra's algorithm always terminates, and in som
 computes will be the correct shortest paths from s to all other vertices" is wrong.
 => When there is a negative cycle reachable from s, there is no shortest path from s from any vertex
 on cycle (every path can be made shorter by going around the cycle additional times)
+
+=> The other one "Dijkstra's algorithm always terminates, but in some cases the paths it computes
+will not be the shortest paths from s to all other vertices." was correct on its own
