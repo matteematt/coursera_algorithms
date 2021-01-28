@@ -71,7 +71,6 @@ class FirstSpec extends AnyWordSpec  {
         for (i <- 0 to testSetLen) {
           outBuff += heap.popMin()
         }
-        println(outBuff)
 
         var wrongOrdering = false
         for (i <- 0 to (testSetLen-1)) {
