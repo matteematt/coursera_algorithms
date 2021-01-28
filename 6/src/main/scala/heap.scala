@@ -10,23 +10,28 @@ import scala.annotation.tailrec
  * peekMin
  */
 class Heap {
-  val arr = ArrayBuffer[Int]()
+  private val arr = ArrayBuffer[Int]()
 
   // Public Methods
   def isEmpty(): Boolean = arr.length == 0
 
   def peekMin(): Option[Int] = {
     if (arr.length == 0) None
-    else {
-      Some(arr(0))
-    }
+    else Some(arr(0))
   }
 
-  def popMin(): Option[Int] = {
-    if (arr.length == 0) None
-    else {
+  def popMin(): Option[Int] = arr.length match {
+    case 0 => None
+    case 1 => {
       val min = arr(0)
       arr -= min
+      Some(min)
+    }
+    case _ => {
+      val min = arr(0)
+      arr(0) = arr(arr.length-1)
+      arr.trimEnd(1)
+      bubbleDown(0)
       Some(min)
     }
   }
@@ -52,6 +57,26 @@ class Heap {
     else {
       swap(parentIndex, index)
       bubbleUp(parentIndex)
+    }
+  }
+
+  @tailrec
+  private def bubbleDown(index: Int): Unit = {
+    val lChild = 2 * index+1
+    val rChild = 2 * index+2
+    var smallest = index
+
+    if (lChild < arr.length && arr(lChild) < arr(smallest)) {
+      smallest = lChild
+    }
+
+    if (rChild < arr.length && arr(rChild) < arr(smallest)) {
+      smallest = rChild
+    }
+
+    if (smallest != index) {
+      swap(index,smallest)
+      bubbleDown(smallest)
     }
   }
 }

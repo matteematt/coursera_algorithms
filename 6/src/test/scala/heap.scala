@@ -1,5 +1,6 @@
 import org.scalatest.wordspec.AnyWordSpec
 
+import scala.collection.mutable.ArrayBuffer
 import dijkstra.Heap
 
 class FirstSpec extends AnyWordSpec  {
@@ -60,19 +61,32 @@ class FirstSpec extends AnyWordSpec  {
       "return the numbers in increasing order" in {
         val heap = new Heap()
 
+        val testSetLen = 40
+
         val r = scala.util.Random
-        val randomVals = Iterator.unfold(0){
-          case x if x < 40 => Some((r.nextInt(200), x+1))
-          case _ => None
+        for (i <- 0 to testSetLen) {
+          heap.add(r.nextInt(200))
         }
-        // randomVals.fold(heap){
-          // (x: Heap,h: Int) => h.add(x)
-        // }
-        randomVals.fold(heap) {
-          (h,i) => h.add(i)
+
+        val outBuff = ArrayBuffer[Option[Int]]()
+        for (i <- 0 to testSetLen) {
+          outBuff += heap.popMin()
         }
-        println(randomVals.mkString(","))
+        println(outBuff)
+
+        var wrongOrdering = false
+        for (i <- 0 to (testSetLen-1)) {
+          val x: Option[Int] = outBuff(i)
+          val y: Option[Int] = outBuff(i+1)
+          wrongOrdering = wrongOrdering || ((x,y) match {
+            case (Some(x),Some(y)) if x <= y => false
+            case _ => true
+          })
+        }
+
+        assert(wrongOrdering == false)
       }
+
     }
   }
 }
