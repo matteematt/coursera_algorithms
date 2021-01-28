@@ -4,12 +4,6 @@ import scala.collection.mutable.ArrayBuffer
 import scala.annotation.tailrec
 import math.Ordering
 
-/*
- * Need to implement
- * add
- * popMin
- * peekMin
- */
 class Heap[O](implicit order: Ordering[O]) {
   private val arr = ArrayBuffer[O]()
 
@@ -42,9 +36,28 @@ class Heap[O](implicit order: Ordering[O]) {
     bubbleUp(arr.length-1)
   }
 
+  def deleteArbitrary(fn: O => Boolean): Option[O] = {
+    findIndex(fn).map { i =>
+      val deleted = arr(i)
+      arr(i) = arr(arr.length-1)
+      arr.trimEnd(1)
+      bubbleDown(i)
+      deleted
+    }
+  }
+
   override def toString(): String = arr.toString
 
   // Private Methods
+  private def findIndex(fn: O => Boolean): Option[Int] = {
+    for (index <- 0 to (arr.length-1)) {
+      if (fn(arr(index))) {
+        return Some(index)
+      }
+    }
+    None
+  }
+
   private def swap(li: Int, ri: Int): Unit = {
     val tmp = arr(li)
     arr(li) = arr(ri)

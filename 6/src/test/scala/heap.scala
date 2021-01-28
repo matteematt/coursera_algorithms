@@ -23,7 +23,6 @@ class FirstSpec extends AnyWordSpec  {
         val heap = new Heap[Int]()
         assert(heap.popMin() == None)
       }
-
     }
 
     "with a value" should {
@@ -84,7 +83,31 @@ class FirstSpec extends AnyWordSpec  {
 
         assert(wrongOrdering == false)
       }
+    }
 
+    "filled with values" should {
+
+      "return None if trying to delete an arbitrary value that doesn't exist" in {
+        val heap = new Heap[Int]()
+        val testVals = List(20,50,60,15)
+        for (testVal <- testVals) {
+          heap.add(testVal)
+        }
+        val returned = heap.deleteArbitrary(_ == 55)
+        assert(returned == None)
+      }
+
+      "return the delete value and remove it from the heap when deleting an arbitrary value" in {
+        val heap = new Heap[Int]()
+        val testVals = List(20,50,60,15)
+        for (testVal <- testVals) {
+          heap.add(testVal)
+        }
+        val returned = heap.deleteArbitrary(_ == 50)
+        assert(returned == Some(50))
+        val afterDeletion = heap.deleteArbitrary(_ == 50)
+        assert(afterDeletion == None)
+      }
     }
   }
 }
