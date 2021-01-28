@@ -2,6 +2,7 @@ package dijkstra
 
 import scala.collection.mutable.ArrayBuffer
 import scala.annotation.tailrec
+import math.Ordering
 
 /*
  * Need to implement
@@ -9,18 +10,18 @@ import scala.annotation.tailrec
  * popMin
  * peekMin
  */
-class Heap {
-  private val arr = ArrayBuffer[Int]()
+class Heap[O](implicit order: Ordering[O]) {
+  private val arr = ArrayBuffer[O]()
 
   // Public Methods
   def isEmpty(): Boolean = arr.length == 0
 
-  def peekMin(): Option[Int] = {
+  def peekMin(): Option[O] = {
     if (arr.length == 0) None
     else Some(arr(0))
   }
 
-  def popMin(): Option[Int] = arr.length match {
+  def popMin(): Option[O] = arr.length match {
     case 0 => None
     case 1 => {
       val min = arr(0)
@@ -36,7 +37,7 @@ class Heap {
     }
   }
 
-  def add(x: Int): Unit = {
+  def add(x: O): Unit = {
     arr.append(x)
     bubbleUp(arr.length-1)
   }
@@ -53,7 +54,7 @@ class Heap {
   @tailrec
   private def bubbleUp(index: Int): Unit = {
     val parentIndex = ((index-1)/2).floor.toInt
-    if (arr(parentIndex) <= arr(index)) return
+    if (order.lteq(arr(parentIndex),arr(index))) return
     else {
       swap(parentIndex, index)
       bubbleUp(parentIndex)
@@ -66,11 +67,11 @@ class Heap {
     val rChild = 2 * index+2
     var smallest = index
 
-    if (lChild < arr.length && arr(lChild) < arr(smallest)) {
+    if (lChild < arr.length && order.lt(arr(lChild),arr(smallest))) {
       smallest = lChild
     }
 
-    if (rChild < arr.length && arr(rChild) < arr(smallest)) {
+    if (rChild < arr.length && order.lt(arr(rChild),arr(smallest))) {
       smallest = rChild
     }
 

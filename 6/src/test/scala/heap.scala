@@ -10,17 +10,17 @@ class FirstSpec extends AnyWordSpec  {
     "initialised" should {
 
       "be empty" in {
-        val heap = new Heap()
+        val heap = new Heap[Int]()
         assert(heap.isEmpty())
       }
 
       "return Nothing when peaking the min value" in {
-        val heap = new Heap()
+        val heap = new Heap[Int]()
         assert(heap.peekMin() == None)
       }
 
       "return Nothing when popping the min value" in {
-        val heap = new Heap()
+        val heap = new Heap[Int]()
         assert(heap.popMin() == None)
       }
 
@@ -29,27 +29,27 @@ class FirstSpec extends AnyWordSpec  {
     "with a value" should {
 
       "be non-empty" in {
-        val heap = new Heap()
+        val heap = new Heap[Int]()
         heap.add(5)
         assert(heap.isEmpty() == false)
       }
 
       "show the minimum value when using peekMin" in {
-        val heap = new Heap()
+        val heap = new Heap[Int]()
         heap.add(5)
         assert(heap.peekMin() == Some(5))
         assert(heap.isEmpty() == false)
       }
 
       "return the minimum value when using popMin, decreasing heap size" in {
-        val heap = new Heap()
+        val heap = new Heap[Int]()
         heap.add(5)
         assert(heap.popMin() == Some(5))
         assert(heap.isEmpty() == true)
       }
 
       "return the minimum value when using popMin, after adding a new smaller value" in {
-        val heap = new Heap()
+        val heap = new Heap[Int]()
         heap.add(5)
         heap.add(3)
         assert(heap.popMin() == Some(3))
@@ -59,7 +59,7 @@ class FirstSpec extends AnyWordSpec  {
 
     "filled with random numbers" should {
       "return the numbers in increasing order" in {
-        val heap = new Heap()
+        val heap = new Heap[Int]()
 
         val testSetLen = 40
 
@@ -76,9 +76,7 @@ class FirstSpec extends AnyWordSpec  {
 
         var wrongOrdering = false
         for (i <- 0 to (testSetLen-1)) {
-          val x: Option[Int] = outBuff(i)
-          val y: Option[Int] = outBuff(i+1)
-          wrongOrdering = wrongOrdering || ((x,y) match {
+          wrongOrdering = wrongOrdering || ((outBuff(i),outBuff(i+1)) match {
             case (Some(x),Some(y)) if x <= y => false
             case _ => true
           })
