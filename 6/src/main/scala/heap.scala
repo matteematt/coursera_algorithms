@@ -36,19 +36,30 @@ class Heap[O](implicit order: Ordering[O]) {
     bubbleUp(arr.length-1)
   }
 
-  def deleteArbitrary(fn: O => Boolean): Option[O] = {
-    findIndex(fn).map { i =>
-      val deleted = arr(i)
-      arr(i) = arr(arr.length-1)
-      arr.trimEnd(1)
-      bubbleDown(i)
-      deleted
-    }
+  // Need to try and find a way to delete in less time
+  def deleteArbitrary(fn: O => Boolean): Option[O] =
+    findIndex(fn).map(i => deleteByIndex(i))
+
+  // Overwrites the first value satisfying fn (bubbling to keep a valid heap)
+  // or adds the value if it doesn't exist
+  def addUpdateArbitrary(fn: O => Boolean, next: O): Unit = {
+    findIndex(fn).map(i => deleteByIndex(i))
+    add(next)
   }
 
   override def toString(): String = arr.toString
 
   // Private Methods
+
+  // it is assumed that its called in bounds as this isn't a public interface
+  private def deleteByIndex(i: Int): O = {
+    val deleted = arr(i)
+    arr(i) = arr(arr.length-1)
+    arr.trimEnd(1)
+    bubbleDown(i)
+    deleted
+  }
+
   private def findIndex(fn: O => Boolean): Option[Int] = {
     for (index <- 0 to (arr.length-1)) {
       if (fn(arr(index))) {

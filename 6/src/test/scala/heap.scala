@@ -107,6 +107,28 @@ class FirstSpec extends AnyWordSpec  {
         val afterDeletion = heap.deleteArbitrary(_ == 50)
         assert(afterDeletion == None)
       }
+
+      "overwrite a value that matches the predicate when using addUpdateArbitrary" in {
+        val heap = new Heap[Int]()
+        val testVals = List(20,50,60,15)
+        for (testVal <- testVals) {
+          heap.add(testVal)
+        }
+        heap.addUpdateArbitrary(_ == 50, 70)
+        val returned = for (_ <- testVals) yield (heap.popMin().get)
+        assert(returned == List(15,20,60,70))
+      }
+
+      "add a value that doesn't match a value with the predicate when using addUpdateArbitrary" in {
+        val heap = new Heap[Int]()
+        val testVals = List(20,50,60,15)
+        for (testVal <- testVals) {
+          heap.add(testVal)
+        }
+        heap.addUpdateArbitrary(_ == 55, 70)
+        val returned = for (_ <- 0 to testVals.length) yield (heap.popMin().get)
+        assert(returned == List(15,20,50,60,70))
+      }
     }
   }
 }
