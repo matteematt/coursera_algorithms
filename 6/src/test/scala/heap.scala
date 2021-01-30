@@ -129,6 +129,17 @@ class FirstSpec extends AnyWordSpec  {
         val returned = for (_ <- 0 to testVals.length) yield (heap.popMin().get)
         assert(returned == List(15,20,50,60,70))
       }
+
+      "remove any values that match a predicate when using cullBy" in {
+        val heap = new Heap[Int]()
+        val testVals = List(20,50,60,15)
+        for (testVal <- testVals) {
+          heap.add(testVal)
+        }
+        heap.cullBy(_ < 25)
+        val returned = for (_ <- 0 to 1) yield (heap.popMin().get)
+        assert(returned == List(50,60))
+      }
     }
   }
 }

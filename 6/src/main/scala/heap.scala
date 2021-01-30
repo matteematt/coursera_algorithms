@@ -47,6 +47,16 @@ class Heap[O](implicit order: Ordering[O]) {
     add(next)
   }
 
+  def cullBy(fn: O => Boolean): Unit = {
+    val indices = for {
+      i <- 0 to (arr.length-1)
+      if fn(arr(i)) } yield i
+    // Need to shift values as values before them are removed
+    val offsetIndices = (0 to (indices.length-1)).zip(indices)
+      .map{ case (o,i) => i-o }
+    offsetIndices.foreach(i => deleteByIndex(i))
+  }
+
   override def toString(): String = arr.toString
 
   // Private Methods
