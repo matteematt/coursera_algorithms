@@ -38,6 +38,25 @@ hAdd heap@(Heap i b s a) x =
       return stArray
    in bubbleUp heap' s
 
+hPeak :: Heap -> Maybe Int
+hPeak (Heap _ _ b a) = if b == 0 then Nothing
+                                 else Just $ head $ IA.elems $ a
+
+hPop :: Heap -> (Heap, Maybe Int)
+hPop heap@(Heap i b s a) =
+  case s of 0 -> (heap, Nothing)
+            1 -> let heap' = Heap i b 0 $ runSTUArray $ do
+                     stArray <- thaw a
+                     writeArray stArray 0 b
+                     return stArray
+                  in (heap', Just $ head $ IA.elems $ a)
+            _ -> let heap' = Heap i b (s-1) $ runSTUArray $ do
+                      stArray <- thaw a
+                      lastVal <- readArray stArray (s-1)
+                      writeArray stArray 0 lastVal
+                      writeArray stArray (s-1) b
+                      return stArray
+                  in (bubbleDown heap' 0, Just $ head $ IA.elems $ a)
 
 -- Private methods
 initBuffLen = 20 :: Int
@@ -57,6 +76,17 @@ growBuffer (Heap i b s a) =
     oldElems = IA.elems a
     newElems = oldElems ++ (take (length oldElems) (cycle [b]))
    in Heap i b s $ array (0,(length newElems)-1) $ zip [0..] newElems
+
+bubbleDown :: Heap -> Int -> Heap
+bubbleDown heap@(Heap i b s a) index =
+  let lci = 2 * index + 1
+      rci = 2 * index + 2
+      smallest = if lci < s && i (a ! lci) (a ! index) then lci else index
+      smallest' = if rci < s && i (a ! rci) (a ! smallest) then rci else smallest
+   in if smallest' == index
+         then heap
+         else let heap' = swapVals heap smallest' index
+               in bubbleDown heap' smallest'
 
 bubbleUp :: Heap -> Int -> Heap
 bubbleUp heap@(Heap i b s a) index =
