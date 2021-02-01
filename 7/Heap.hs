@@ -16,8 +16,10 @@ data Heap = Heap {invariant :: Int -> Int -> Bool
                  ,arr :: UArray Int Int}
 
 instance Show Heap where
-  show (Heap _ _ s a) = show $ take s $ IA.elems a
+  show (Heap _ _ s a) = mconcat[show $ take s $ elems,", buffer size: ",show $ length elems]
+    where elems = IA.elems a
 
+-- TODO: Probably get rid of this and only use it for testing
 initMinTestHeap :: [Int] -> Heap
 initMinTestHeap xs = Heap (<) maxBound (length xs) (array (0,(length buffXs - 1)) $ zip [0..] buffXs)
   where buffXs = xs ++ (take ((length xs) * 4) $ repeat maxBound)
@@ -45,7 +47,30 @@ swapVals (Heap i b s a) l r = Heap i b s $ runSTUArray $ do
   writeArray stArray l rVal
   return stArray
 
+growBuffer :: Heap -> Heap
+growBuffer (Heap i b s a) =
+  let
+    oldElems = IA.elems a
+    newElems = oldElems ++ (take (length oldElems) (cycle [b]))
+   in Heap i b s $ array (0,(length newElems)-1) $ zip [0..] newElems
+
+
 -- If the buffer is full we will need to create a larger array
 fullBuffer :: Heap -> Bool
 fullBuffer (Heap _ b s a) = s >= (lastI + 1)
   where lastI = snd $ bounds $ a
+
+
+
+-- Doesn't work because the type of stArray from thaw and stArray from newArray
+-- don't match, so it doesn't work in the do statment
+-- growBuffer :: Heap -> Heap
+-- growBuffer (Heap i b s a) = Heap i b s $ runSTUArray $ do
+  -- let oldLen = snd $ bounds $ a
+  -- stArray <- thaw a
+  -- stOldArray <- thaw a
+  -- stNewArray <- newArray (0,(oldLen*2)-1) b
+  -- forM_ [0..(oldLen-1)] $ \i -> do
+    -- oldVal <- readArray stOldArray i
+    -- writeArray stNewArray i oldVal
+  -- return stNewArray
