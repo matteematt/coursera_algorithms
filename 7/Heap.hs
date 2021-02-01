@@ -1,5 +1,5 @@
 {-# LANGUAGE FlexibleContexts, UndecidableInstances #-}
-module Heap where
+module Heap(Heap, initMaxHeap, initMinHeap, hAdd, hPeak, hPop, hLen) where
 
 import Data.Array.ST
 import Data.Array.Unboxed
@@ -19,15 +19,16 @@ instance Show Heap where
   show (Heap _ _ s a) = mconcat[show $ take s $ elems,", buffer size: ",show $ length elems]
     where elems = IA.elems a
 
--- TODO: Probably get rid of this and only use it for testing
-initMinTestHeap :: [Int] -> Heap
-initMinTestHeap xs = Heap (<) maxBound (length xs) (array (0,(length buffXs - 1)) $ zip [0..] buffXs)
-  where buffXs = xs ++ (take ((length xs) * 4) $ repeat maxBound)
 
 initMinHeap :: Heap
 initMinHeap = Heap (<=) maxBound 0
               $ array (0,initBuffLen-1)
               $ zip [0..] $ take initBuffLen $ repeat maxBound
+
+initMaxHeap :: Heap
+initMaxHeap = Heap (>=) minBound 0
+              $ array (0,initBuffLen-1)
+              $ zip [0..] $ take initBuffLen $ repeat minBound
 
 hAdd :: Heap -> Int -> Heap
 hAdd heap@(Heap i b s a) x =
@@ -41,6 +42,9 @@ hAdd heap@(Heap i b s a) x =
 hPeak :: Heap -> Maybe Int
 hPeak (Heap _ _ b a) = if b == 0 then Nothing
                                  else Just $ head $ IA.elems $ a
+
+hLen :: Heap -> Int
+hLen (Heap _ _ b _) = b
 
 hPop :: Heap -> (Heap, Maybe Int)
 hPop heap@(Heap i b s a) =
@@ -96,12 +100,15 @@ bubbleUp heap@(Heap i b s a) index =
          else let heap' = swapVals heap index parentI
                in bubbleUp heap' parentI
 
-
 -- If the buffer is full we will need to create a larger array
 fullBuffer :: Heap -> Bool
 fullBuffer (Heap _ b s a) = s >= (lastI + 1)
   where lastI = snd $ bounds $ a
 
+-- TODO: Probably get rid of this and only use it for testing
+initMinTestHeap :: [Int] -> Heap
+initMinTestHeap xs = Heap (<) maxBound (length xs) (array (0,(length buffXs - 1)) $ zip [0..] buffXs)
+  where buffXs = xs ++ (take ((length xs) * 4) $ repeat maxBound)
 
 
 -- Doesn't work because the type of stArray from thaw and stArray from newArray
