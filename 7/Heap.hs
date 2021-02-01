@@ -25,15 +25,19 @@ initMinTestHeap xs = Heap (<) maxBound (length xs) (array (0,(length buffXs - 1)
   where buffXs = xs ++ (take ((length xs) * 4) $ repeat maxBound)
 
 initMinHeap :: Heap
-initMinHeap = Heap (<) maxBound 0
+initMinHeap = Heap (<=) maxBound 0
               $ array (0,initBuffLen-1)
               $ zip [0..] $ take initBuffLen $ repeat maxBound
 
 hAdd :: Heap -> Int -> Heap
-hAdd (Heap i b s a) x = Heap i b (s+1) $ runSTUArray $ do
-  stArray <- thaw a
-  writeArray stArray s x
-  return stArray
+hAdd heap@(Heap i b s a) x =
+  let heap' = Heap i b (s+1) $ runSTUArray $ do
+      let (Heap _ _ _ a') = if fullBuffer heap then growBuffer heap else heap
+      stArray <- thaw a'
+      writeArray stArray s x
+      return stArray
+   in bubbleUp heap' s
+
 
 -- Private methods
 initBuffLen = 20 :: Int
@@ -53,6 +57,14 @@ growBuffer (Heap i b s a) =
     oldElems = IA.elems a
     newElems = oldElems ++ (take (length oldElems) (cycle [b]))
    in Heap i b s $ array (0,(length newElems)-1) $ zip [0..] newElems
+
+bubbleUp :: Heap -> Int -> Heap
+bubbleUp heap@(Heap i b s a) index =
+  let parentI = div index 2
+   in if i (a ! parentI) (a ! index)
+         then heap
+         else let heap' = swapVals heap index parentI
+               in bubbleUp heap' parentI
 
 
 -- If the buffer is full we will need to create a larger array
