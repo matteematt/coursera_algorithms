@@ -1,5 +1,5 @@
 {-# LANGUAGE FlexibleContexts, UndecidableInstances #-}
-module Heap(Heap, initMaxHeap, initMinHeap, hAdd, hPeak, hPop, hLen) where
+module Heap(Heap, initMaxHeap, initMinHeap, hAdd, hPeek, hPop, hLen) where
 
 import Data.Array.ST
 import Data.Array.Unboxed
@@ -39,8 +39,8 @@ hAdd heap@(Heap i b s a) x =
       return stArray
    in bubbleUp heap' s
 
-hPeak :: Heap -> Maybe Int
-hPeak (Heap _ _ b a) = if b == 0 then Nothing
+hPeek :: Heap -> Maybe Int
+hPeek (Heap _ _ b a) = if b == 0 then Nothing
                                  else Just $ head $ IA.elems $ a
 
 hLen :: Heap -> Int
