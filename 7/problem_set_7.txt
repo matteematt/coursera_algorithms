@@ -17,6 +17,8 @@ time to extract the min
 insert, but you know the element you want is the last one (I think I have gotten confused between
 priority queue and a heap in this question)
 
+=> Correct
+
 
 2. Suppose you implement the functionality of a priority queue on an unsorted array. What is the
 worst case running time of insert and extract-min, respectively? (Assume that you have a large
@@ -57,6 +59,10 @@ You would need to eventually go the entire depth of the tree to see how many nod
 => Theta(nlog(n) as you need to scan each node over each level
 => Incorrect - Can you do better
 => Theta(n)
+
+=> Correct - For the lower bound, note that a linear number of quantities need to be computed. For
+the upper bound, recursively compute the sizes of the left and right subtrees, and use the formula
+size(x) = 1 + size(y) + size(z) from lecture.
 
 
 5. Suppose we relax the third invariant of red-black trees to the property that there are no three
