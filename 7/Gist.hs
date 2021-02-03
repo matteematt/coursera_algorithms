@@ -1,15 +1,12 @@
-{-# LANGUAGE FlexibleContexts, UndecidableInstances #-}
--- module Heap(Heap, initMaxHeap, initMinHeap, initMinTestHeap, hAdd, hPeek, hPop, hLen) where
-module Heap where
 
+-- Heap.hs
 import Data.Array.ST
 import Data.Array.Unboxed
 import Control.Monad
 import Control.Monad.ST
 import qualified Data.Array.IArray as IA
-
--- Was hoping to make a Heap generic in terms of values, but this does not
--- look possible https://stackoverflow.com/questions/2222997/stuarray-with-polymorphic-type
+import Data.List
+import Debug.Trace
 
 data Heap = Heap {invariant :: Int -> Int -> Bool
                  ,bound :: Int
@@ -101,22 +98,74 @@ fullBuffer :: Heap -> Bool
 fullBuffer (Heap _ b s a) = s >= (lastI + 1)
   where lastI = snd $ bounds $ a
 
--- TODO: Probably get rid of this and only use it for testing
-initMinTestHeap :: [Int] -> Heap
-initMinTestHeap xs = Heap (<) maxBound (length xs) (array (0,(length buffXs - 1)) $ zip [0..] buffXs)
-  where buffXs = xs ++ (take ((length xs) * 4) $ repeat maxBound)
+-- Main.hs
+data MedianTracker = MedianTracker Heap Heap [Int]
+
+run :: String -> String
+run xs = let mainInts = map (read :: String -> Int) $ words xs
+             minH = initMinHeap
+             maxH = initMaxHeap
+             (MedianTracker _ _ ms) = foldl' exec (MedianTracker minH maxH []) mainInts
+             medians = trace (show $ reverse ms) (ms)
+          in show $ sum medians `mod` 10000
 
 
+exec :: MedianTracker -> Int -> MedianTracker
+exec (MedianTracker minH maxH ms) x =
+  let heapsWithNewVal = if Just x >= hPeek maxH then (hAdd minH x,maxH)
+                                             else (minH,hAdd maxH x)
+      -- (minH',maxH') = balanceHeaps heapsWithNewVal
+      balancedHeaps = balanceHeaps heapsWithNewVal
+      (minH',maxH') = trace (show balancedHeaps) (balancedHeaps)
+      median = calcMedian minH' maxH'
+   in MedianTracker minH' maxH' (median : ms)
 
--- Doesn't work because the type of stArray from thaw and stArray from newArray
--- don't match, so it doesn't work in the do statment
--- growBuffer :: Heap -> Heap
--- growBuffer (Heap i b s a) = Heap i b s $ runSTUArray $ do
-  -- let oldLen = snd $ bounds $ a
-  -- stArray <- thaw a
-  -- stOldArray <- thaw a
-  -- stNewArray <- newArray (0,(oldLen*2)-1) b
-  -- forM_ [0..(oldLen-1)] $ \i -> do
-    -- oldVal <- readArray stOldArray i
-    -- writeArray stNewArray i oldVal
-  -- return stNewArray
+calcMedian :: Heap -> Heap -> Int
+calcMedian minH maxH =
+  let maxLen = hLen maxH
+      heapLen = maxLen + hLen minH
+      medianI = if even heapLen then heapLen `div` 2 else (heapLen+1) `div` 2
+      (Just m) = if medianI > maxLen then hPeek minH else hPeek maxH
+   in m
+
+balanceHeaps :: (Heap,Heap) -> (Heap,Heap)
+balanceHeaps (minH,maxH) | sizeDiff >= 2 = let (minH',(Just x)) = hPop minH in (minH',hAdd maxH x)
+                         | sizeDiff <= negate 2 = let (maxH',(Just x)) = hPop maxH in (hAdd minH x,maxH')
+                         | otherwise = (minH,maxH)
+  where minLen = hLen minH
+        maxLen = hLen maxH
+        sizeDiff = minLen - maxLen
+
+testCase = "78\n\
+  \71\n\
+  \99\n\
+  \9\n\
+  \24\n\
+  \11\n\
+  \94\n\
+  \96\n\
+  \90\n\
+  \14\n\
+  \27\n\
+  \60\n\
+  \55\n\
+  \46\n\
+  \29\n\
+  \74\n\
+  \10\n\
+  \67\n\
+  \8\n\
+  \97\n\
+  \30\n\
+  \18\n\
+  \2\n\
+  \43\n\
+  \56\n\
+  \98\n\
+  \4\n\
+  \33\n\
+  \76\n\
+  \86\n\
+  \19\n\
+  \41\n\
+  \92"

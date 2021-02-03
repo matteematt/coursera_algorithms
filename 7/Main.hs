@@ -2,9 +2,15 @@ module Main where
 
 import Heap
 import Data.List
+import Debug.Trace
 
 main :: IO ()
 main = interact run
+
+-- Wrong answers 832
+-- 9038
+testBeforeBroken = initMinTestHeap [46,55,60,56,90,67,78,76,96,97,94,71,99,74,98,86]
+testAfterBroken = hAdd testBeforeBroken 92
 
 -- Map over each number
 -- Put it in the correct heap
@@ -22,16 +28,19 @@ run xs = let mainInts = map (read :: String -> Int) $ words xs
              minH = initMinHeap
              maxH = initMaxHeap
              (MedianTracker _ _ ms) = foldl' exec (MedianTracker minH maxH []) mainInts
-          in show $ sum ms `mod` 10000
+             medians = trace (show $ reverse ms) (ms)
+          in show $ sum medians `mod` 10000
 
 
 exec :: MedianTracker -> Int -> MedianTracker
 exec (MedianTracker minH maxH ms) x =
-  let (minH',maxH') = if Just x > hPeek maxH then (hAdd minH x,maxH)
+  let heapsWithNewVal = if Just x >= hPeek maxH then (hAdd minH x,maxH)
                                              else (minH,hAdd maxH x)
-      (minH'',maxH'') = balanceHeaps (minH',maxH')
-      median = calcMedian minH'' maxH''
-   in MedianTracker minH'' maxH'' (median : ms)
+      (minH',maxH') = balanceHeaps heapsWithNewVal
+      -- balancedHeaps = balanceHeaps heapsWithNewVal
+      -- (minH',maxH') = trace (show balancedHeaps) (balancedHeaps)
+      median = calcMedian minH' maxH'
+   in MedianTracker minH' maxH' (median : ms)
 
 calcMedian :: Heap -> Heap -> Int
 calcMedian minH maxH =
@@ -49,6 +58,206 @@ balanceHeaps (minH,maxH) | sizeDiff >= 2 = let (minH',(Just x)) = hPop minH in (
         maxLen = hLen maxH
         sizeDiff = minLen - maxLen
 
+checkMaxHeap :: [Int] -> Bool
+checkMaxHeap xs = go xs 0 (length xs - 1)
+  where go :: [Int] -> Int -> Int -> Bool
+        go arr i n = if i >=  (n-2) `div` 2
+          then True
+          else (arr !! i) >= (arr !! (2*i+1))
+            && (arr !! i) >= (arr !! (2*i+2))
+            && go arr (2*i+1) n
+            && go arr (2*i+2) n
+
+checkMinHeap :: [Int] -> Bool
+checkMinHeap xs = go xs 0 (length xs - 1)
+  where go :: [Int] -> Int -> Int -> Bool
+        go arr i n = if i >=  (n-2) `div` 2
+          then True
+          else (arr !! i) <= (arr !! (2*i+1))
+            && (arr !! i) <= (arr !! (2*i+2))
+            && go arr (2*i+1) n
+            && go arr (2*i+2) n
+
+
+pass :: [Int]
+pass = [46,55,60,56,90,67,78,76,96,97,94,71,99,74,98,86]
+fail :: [Int]
+fail = [46,55,60,56,90,67,78,76,92,97,94,71,99,74,98,86,96]
+
+passHeap = foldl' (\h x -> hAdd h x) initMinHeap pass
+fromPassHeap :: [Int]
+fromPassHeap = [46,55,60,56,90,67,74,76,96,97,94,71,99,78,98,86]
+
+added92 :: [Int]
+added92 = [46,55,60,56,90,67,74,76,92,97,94,71,99,78,98,86,96]
+
+testHeap = initMinHeap
+th1 = hAdd testHeap 78 -- add 78 correct
+th2 = th1 -- add 71 correct
+th3 = hAdd th2 99 -- add 99 correct
+th4 = th3 -- add 9 correct
+th5 = th4 -- add 24 correct
+th6 = hAdd th5 71 -- add 11, taking 71 from maxheap correct
+th7 = hAdd th6 94 -- add 94 correct
+th8 = let (h,_) = hPop th7 in hAdd h 96 -- add 96, giving 71 to maxheap correct
+th9 = hAdd th8 90 -- add 90 correct
+-- th10 =
+
+ -- "78\n\
+  -- \71\n\
+  -- \99\n\
+  -- \9\n\
+  -- \24\n\
+  -- \11\n\
+  -- \94\n\
+  -- \96\n\
+  -- \90\n\
+  -- \14\n\
+  -- \27\n\
+  -- \60\n\
+  -- \55\n\
+  -- \46\n\
+  -- \29\n\
+  -- \74\n\
+  -- \10\n\
+  -- \67\n\
+  -- \8\n\
+  -- \97\n\
+  -- \30\n\
+  -- \18\n\
+  -- \2\n\
+  -- \43\n\
+  -- \56\n\
+  -- \98\n\
+  -- \4\n\
+  -- \33\n\
+  -- \76\n\
+  -- \86\n\
+  -- \19\n\
+  -- \41\n\
+  -- \92\n\
+  -- \89\n\
+  -- \40\n\
+
+testCase1 = "1\n\
+  \666\n\
+  \10\n\
+  \667\n\
+  \100\n\
+  \2\n\
+  \3"
+
+testCase2 = "6331\n\
+  \2793\n\
+  \1640\n\
+  \9290\n\
+  \225\n\
+  \625\n\
+  \6195\n\
+  \2303\n\
+  \5685\n\
+  \1354"
+
+testCase3 = "78\n\
+  \71\n\
+  \99\n\
+  \9\n\
+  \24\n\
+  \11\n\
+  \94\n\
+  \96\n\
+  \90\n\
+  \14\n\
+  \27\n\
+  \60\n\
+  \55\n\
+  \46\n\
+  \29\n\
+  \74\n\
+  \10\n\
+  \67\n\
+  \8\n\
+  \97\n\
+  \30\n\
+  \18\n\
+  \2\n\
+  \43\n\
+  \56\n\
+  \98\n\
+  \4\n\
+  \33\n\
+  \76\n\
+  \86\n\
+  \19\n\
+  \41\n\
+  \92\n\
+  \89\n\
+  \40\n\
+  \50\n\
+  \51\n\
+  \62\n\
+  \93\n\
+  \22\n\
+  \13\n\
+  \45\n\
+  \84\n\
+  \32\n\
+  \31\n\
+  \73\n\
+  \54\n\
+  \64\n\
+  \58\n\
+  \83\n\
+  \47\n\
+  \79\n\
+  \7\n\
+  \48\n\
+  \17\n\
+  \34\n\
+  \35\n\
+  \42\n\
+  \5\n\
+  \100\n\
+  \95\n\
+  \59\n\
+  \82\n\
+  \75\n\
+  \39\n\
+  \38\n\
+  \68\n\
+  \1\n\
+  \88\n\
+  \80\n\
+  \36\n\
+  \57\n\
+  \15\n\
+  \69\n\
+  \91\n\
+  \81\n\
+  \28\n\
+  \65\n\
+  \23\n\
+  \77\n\
+  \16\n\
+  \26\n\
+  \70\n\
+  \53\n\
+  \44\n\
+  \20\n\
+  \49\n\
+  \6\n\
+  \12\n\
+  \87\n\
+  \63\n\
+  \3\n\
+  \72\n\
+  \52\n\
+  \61\n\
+  \21\n\
+  \85\n\
+  \37\n\
+  \66\n\
+  \25"
 
 mainData = "6331\n\
   \2793\n\
