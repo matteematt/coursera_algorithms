@@ -1,6 +1,5 @@
 {-# LANGUAGE FlexibleContexts, UndecidableInstances #-}
--- module Heap(Heap, initMaxHeap, initMinHeap, initMinTestHeap, hAdd, hPeek, hPop, hLen) where
-module Heap where
+module Heap(Heap, initMaxHeap, initMinHeap, initMinTestHeap, hAdd, hPeek, hPop, hLen) where
 
 import Data.Array.ST
 import Data.Array.Unboxed
@@ -90,11 +89,12 @@ bubbleDown heap@(Heap i b s a) index =
 
 bubbleUp :: Heap -> Int -> Heap
 bubbleUp heap@(Heap i b s a) index =
-  let parentI = div index 2
+  let parentI = let pi = div (index-1) 2 in if pi < 0 then 0 else pi
    in if i (a ! parentI) (a ! index) || (a ! parentI) == (a ! index)
          then heap
          else let heap' = swapVals heap index parentI
-               in bubbleUp heap' parentI
+               in if parentI == 0 then heap' else bubbleUp heap' parentI
+
 
 -- If the buffer is full we will need to create a larger array
 fullBuffer :: Heap -> Bool
@@ -105,18 +105,3 @@ fullBuffer (Heap _ b s a) = s >= (lastI + 1)
 initMinTestHeap :: [Int] -> Heap
 initMinTestHeap xs = Heap (<) maxBound (length xs) (array (0,(length buffXs - 1)) $ zip [0..] buffXs)
   where buffXs = xs ++ (take ((length xs) * 4) $ repeat maxBound)
-
-
-
--- Doesn't work because the type of stArray from thaw and stArray from newArray
--- don't match, so it doesn't work in the do statment
--- growBuffer :: Heap -> Heap
--- growBuffer (Heap i b s a) = Heap i b s $ runSTUArray $ do
-  -- let oldLen = snd $ bounds $ a
-  -- stArray <- thaw a
-  -- stOldArray <- thaw a
-  -- stNewArray <- newArray (0,(oldLen*2)-1) b
-  -- forM_ [0..(oldLen-1)] $ \i -> do
-    -- oldVal <- readArray stOldArray i
-    -- writeArray stNewArray i oldVal
-  -- return stNewArray
