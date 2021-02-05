@@ -1,0 +1,62 @@
+Problem Set 8
+
+1. Which of the following is not a property that you expect a well-designed hash function to have?
+
+* The hash function should be easy to store (constant space or close to it)
+Yes because otherwise the lookup and store functions would take too long
+
+* The has function should "spread out" most (i.e. "non-pathological") data sets (across the
+buckets/slots of the hash table)
+Yes otherwise you will end up with collisions which will worsen the running time of the hash
+functions
+
+* The hash function should "spread out" every data set (across buckets/slots of the hash table)
+No because every hash function will have one set of data which will "break" it and map to the same
+bucket (even if this set is not reasonable to calculate such as when using cryptographic hashing
+functions)
+
+* The hash function should be easy to compute (constant time or close to it)
+Yes because otherwise the lookup and store functions would take too long
+
+
+2. Suppose we use a hash function h to hash n distinct keys into an array T of length m. Assuming
+simple uniform hashing --- that is, with each key mapped independently and uniformly to a random
+bucket --- what is the expected number of keys that get mapped to the first bucket. More precisely,
+what is the expected cardinality of the set {k : h(k) = 1}
+
+If there are 4 distinct keys and 2 buckets then its 1/2 likely for each one to go in one or the
+other => 2 in the first bucket
+=> n/m
+
+
+3. Suppose we use a hash function h to hash n distinct keys into an array T of length m. Say that
+two distinct keys x,y collide under h if h(x)=h(y). Assuming simple uniform hashing --- that is,
+with each key mapped independently and uniformly to a random bucket --- what is the probability that
+a given pair x,y distinct keys collide?
+
+For set n=4
+m = 2
+== 0.5 * 0.5 = 0.25
+
+for set n=4
+m = 4
+0.25 * 0.25 = 0.125
+
+=> 1/m^2
+
+
+4. Suppose we use a hash fucntion h to hash n distinct keys into an array T of length m. Assuming
+simple uniform hashing --- that is, with each key mapped independently and uniformly to a random
+bucket --- what is the expected number of pairs of distinct keys that collide (As above, distinct
+keys x,y are said to collide if h(x)=h(y))
+
+For set n=4, m=2
+== 2
+
+For set n=4,m=4
+== 0
+
+=> n(n-1)/2m
+
+
+5. To interpret our heuristic analysis of bloom filters
