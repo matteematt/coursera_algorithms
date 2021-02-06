@@ -18,6 +18,8 @@ functions)
 * The hash function should be easy to compute (constant time or close to it)
 Yes because otherwise the lookup and store functions would take too long
 
+Correct -> As discussed in the lecture, unfortunately there is no such hash function
+
 
 2. Suppose we use a hash function h to hash n distinct keys into an array T of length m. Assuming
 simple uniform hashing --- that is, with each key mapped independently and uniformly to a random
@@ -27,6 +29,10 @@ what is the expected cardinality of the set {k : h(k) = 1}
 If there are 4 distinct keys and 2 buckets then its 1/2 likely for each one to go in one or the
 other => 2 in the first bucket
 => n/m
+
+Correct - Use linearity of expectation, with one indicator variable for each key. The probability
+that one key hashes to the first bucket is 1/m, and by linearity of expectation the total expected
+number of keys that hash to the first bucket is just n/m.
 
 
 3. Suppose we use a hash function h to hash n distinct keys into an array T of length m. Say that
@@ -44,8 +50,11 @@ m = 4
 
 => 1/m^2
 
+Incorrect - This is the probability that x,y collide in a given bucket (e.g. that h(x)=h(y)=1). But
+what if they collide in some other bucket?
 
-4. Suppose we use a hash fucntion h to hash n distinct keys into an array T of length m. Assuming
+
+4. Suppose we use a hash function h to hash n distinct keys into an array T of length m. Assuming
 simple uniform hashing --- that is, with each key mapped independently and uniformly to a random
 bucket --- what is the expected number of pairs of distinct keys that collide (As above, distinct
 keys x,y are said to collide if h(x)=h(y))
@@ -58,5 +67,15 @@ For set n=4,m=4
 
 => n(n-1)/2m
 
+Correct - There are nC2 (i.e. n(n-1)/2) pairs of distinct keys. By the previous problem, each pair
+has a 1/m chance of colliding. The answer now follows from the linearity of expectation
 
-5. To interpret our heuristic analysis of bloom filters
+
+5. To interpret our heuristic analysis of bloom filters in lecture, we considered the case where we
+were willing to use 8 bits of space per object in the bloom filter. Suppose we were willing to use
+twice as much space (16 bits per object). What can you say about the corresponding false positive
+rate, according to our heuristic analysis (assuming that the number k of hash tables is set
+optimally?) [Choose the strongest true statement]
+
+Less than .1%
+Correct
