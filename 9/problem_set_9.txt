@@ -1,0 +1,107 @@
+Problem Set 9
+
+1. We are given as input a set of n requests (e.g. for the use of an auditorium), with a known start
+time s_i and finish time t_i for each request i. Assume that all start and finish times are
+distinct. Two requests conflict if they overlap in time --- if one of them starts between the start
+and finish times of the other. Our goal is to select a maximum-cardinality subset of the given
+requests that contain no conflicts. (For example, given three requests consuming the intervals
+(0,3),(2,5),(4,7), we want to return the first and third requests.) We aim to design a greedy
+algorithm for this problem with the following form: At each iteration we select a new request i,
+including it in the solution-so-far and deleting from future consideration all requests that
+conflict with i.
+Which of the following greedy rules is guaranteed to always compute an optimal solution?
+
+=> At each iteration, pick the remaining requests with the fewest number of conflicts with other
+remaining requests (breaking ties arbitrarily)
+
+Incorrect - there are counterexamples, though finding one requires a bit of work
+
+=> At each iteration, pick the remaining request which requires the least time (i.e. has the
+smallest value of t_i - s_i)
+
+Incorrect - Find a counterexample that only uses three requests
+
+
+2. We are given as input a set of n jobs, where job j has a processing time p_j and a deadline d_j.
+Recall the definition of completion times C_j from the video lectures. Given a schedule (i.e. an
+ordering of the jobs), we define the lateness l_j of the job j as the amount of time C_j - d_j after
+its deadline that the job completes, or as 0 if C_j <= d_j. Our goal is to minimise the maximum
+lateness, max_j(l_j).
+Which of the following greedy rules produced an ordering that minimises the maximum lateness? You
+can assume that all processing times and deadlines are distinct.
+
+=> None of the other answers are correct
+
+Incorrect - One of the proposed greedy rules work, Try and exchange argument
+
+=> Schedule the requests in increasing order of the product d_j . p_j
+
+Incorrect - There is a counterexample with two jobs (e.g. if all processing times are bigger than
+all deadlines.)
+
+
+3. In this problem you are given as input a graph T=(V,E) that is a tree (that is T is undirected,
+connected, and acyclic). A perfect matching of T is a subset F ⊂ E of edges such that every vertex v
+in V is the endpoint of exactly one edge of F. Equivalently, F matches each vertex of T with exactly
+one other vertex of T. For example, a path graph has a perfect matching if and only if it has an
+even number of vertices.
+Consider the following two algorithms that attempt to decide whether or not a given tree has a
+perfect matching. The degree of a vertex in a graph is the number of edges incident to it. (The two
+algorithms differ only in the choice of v in line 5)
+
+While T has at least one vertex:
+	If T has no edges:
+		halt and output "T has no perfect matching."
+	Else:
+		B() or A()
+		Choose an arbitrary edge e incident to v.
+		Delete e and its two endpoints from T.
+[end of while loop]
+Halt and output "T has a perfect matching."
+
+A:
+	Let v be a vertex of T with maximum degree.
+
+B:
+	Let v be a vertex of T with a minimum non-zero degree.
+
+=> Algorithm A always correctly determines whether or not a given tree graph has a perfect matching;
+algorithm B does not.
+
+Incorrect - Consider a three-hop path
+
+=> Neither algorithm always correctly determines whether or not a given tree graph has a perfect
+matching
+
+Incorrect - Try to prove correctness by induction
+
+=> Both algorithms always correctly determine whether or not a given tree has a perfect match
+
+
+4. Consider an undirected graph G=(V,E) where every edge e ∈ E has a given cost c_e. Assume that all
+the edge costs are positive and distinct. Let T be a minimum spanning tree of G and P a shortest path
+from the vertex s to the vertex t. Now suppose that the cost of every edge e of G is increased by 1
+and becomes c_e + 1. Call this new graph G'. Which of the following statements is true about G'?
+
+P may not be the shortest path if the shortest path has more edges in, it'll be disproportionately
+increased
+T must be a minimum spanning tree
+
+=> T must be a minimum spanning tree but P may not be the shortest s-t path.
+
+Correct - The positive statement has many proofs (e.g. via the cut property). for the negative
+statement, think about two different paths from s to t that contain a different number of edges.
+
+5. Suppose T is a minimum spanning tree of the connected graph G. Let H be a connected induced
+sub graph of G (i.e. H is obtained from G by taking some subset S ⊆ V of vertices, and taking all
+edges of E that have both endpoints in S. Also, assuming H is connected.) Which of the following is
+true about edges of T that lie in H? You can assume edge costs are distinct, if you with [Choose the
+strongest true statement]
+
+=> For every G and H and spatting tree T_H of H, at least one of these edges is running from T_H
+
+Incorrect - Think about the cut property
+
+=> For every G and H, these edges form a spanning tree (but not necessary minimum-cost) of H
+
+Incorrect - Suppose G is a triangle and H is an edge
