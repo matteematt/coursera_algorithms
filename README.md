@@ -12,3 +12,5 @@ Each directory contains the working out for each week on the course
 5. Kosaraju Strong Connected Components (SCC) finder, Haskell
 6. Dijkstra, Scala (so I can use an in memory efficient heap implementation)
 7. Median Maintenance, Haskell as I have already made a heap in scala for the last exercise
+8. 2-Sum algorithm, I did in Haskell writing multithreaded code, but a better solution could be done
+	 in future (`8/README.md`)
