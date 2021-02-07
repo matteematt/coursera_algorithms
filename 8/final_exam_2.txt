@@ -1,0 +1,135 @@
+Final exam 2
+
+1. Consider a directed graph G=(V,E) with non-negative edge lengths and two distinct vertices s and t
+of V. Let P denote a shortest path from s to t in G. If we add 10 t the length of every edge in the
+graph [check all that apply]
+
+*P might or might not remain a shortest s-t path (depending on the graph).
+True, the shortest path with more edges will no longer be the shortest path anymore
+
+*P definitely remains a shortest s-t path
+False, for the above reason
+
+*If P has only one edge, then P definitely remains a shortest s-t path.
+True, because it won't disproportionally increase in length
+
+*P definitely does not remain a shortest s-t path.
+False, for the above reason
+
+Correct
+
+2. What is the running time of depth-first search, as a function of n and m, if the input graph
+G=(V,E) is represented by an adjacency matrix (i.e. NOT an adjacency list) where as usual n=|V| and
+m=|E|?
+
+=> Theta(n^2 * log(m))
+
+Incorrect
+
+3. What is the asymptotic running time of the insert and extract-min operations, respectively, for a
+heap with n objects?
+
+=> Theta(log(n)) and Theta(1)
+
+Incorrect
+
+
+4. On adding one extra edge to a directed graph G, the number of strongly connected components...?
+
+=> ... might or might not remain the same (depending on the graph)
+
+Correct
+
+5. Which of the following statements hold? (As usual n and m denote the number of vertices and
+edges, respectively, of a graph.) [Check all that apply]
+
+* Breadth first search can be used to compute shortest paths in O(m+n) time (when every edge has unit
+length)
+True, but only when every edge has unit length
+
+* Depth-first search can be used to compute a topological ordering of a directed acyclic graph in
+O(m+n) time.
+True
+
+* Depth-first search can be used to compute the strongly connected components of a directed graph in
+O(m+n) time.
+True, we can use a SCC finder which uses DFS on the Grev to get a list of node orderings, and then
+use DFS on each of the nodes in order to work out the head of each node, nodes with the same head
+are part of the same SCC
+
+* Breath,first search can be used to compute the connected components of an undirected graph in O(m+n)
+time
+False?
+
+Incorrect
+
+6. When does a directed graph have a topological ordering?
+
+=> When it is directed acyclic
+
+Incorrect
+
+7. Suppose you implement the operations Insert and extract-min using a sorted array (from biggest to
+smallest). What is the worst case running time of insert and extract min respectively? (Assume the
+array is large enough that it doesn't have to be resized on insertions)
+
+Can just insert at the end which gives constant time insertion
+Have to scan the entire array to find the min giving linear time extract-min
+
+=> Theta(1) and Theta(n)
+
+Incorrect
+
+8. Which of the following patterns in a computer program suggests that a heap data structure could
+provide a significant spreed-up? [Check all that apply]
+
+* Repeated maximum computations
+True
+
+* None of the other options
+False due to the other two answers
+
+* Repeated lookups
+False, this is what a hashmap is suited for
+
+Repeated minimum computations
+True
+
+Correct
+
+
+9. Which of the following patterns in a computer program suggests that a hash table could provide a
+significant speed-up? [check all that apply]
+
+* Repeated maximum computations
+False
+
+* None of the other options
+False
+
+* Repeated lookups
+True
+
+Repeated minimum computations
+False
+
+Correct
+
+10. Which of the following statements about Dijkstra's shortest path algorithm are true for input
+graphs that might have some negative edge lengths? [check all that apply]
+
+* It may or may not correctly compute shortest-path distances (from a given source vertex to all
+other vertices), depending on the graph
+True, because it will fail or succeeded depending on whether there are negative lengths
+
+* It may or may not terminate (depending on the graph).
+False, it may get stuck in a negative loop, but it terminates after its checked the amount of edges
+
+* It is guaranteed to correctly compute shortest path distances (from a given source vertex to all
+other vertices).
+False, it map fail when there are negative lengths
+
+* It is guaranteed to terminate
+True, it terminates after it has checked the total number of edges
+
+Correct
