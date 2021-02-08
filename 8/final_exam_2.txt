@@ -26,6 +26,11 @@ m=|E|?
 
 Incorrect
 
+=> Theta(n+m) as this is almost for free
+
+Incorrect
+
+
 3. What is the asymptotic running time of the insert and extract-min operations, respectively, for a
 heap with n objects?
 
@@ -33,12 +38,18 @@ heap with n objects?
 
 Incorrect
 
+log(n) to extract because you have to bubble down the value you move to the top
+
+=> Theta(log(n)) and Theta(log(n))
+
+Incorrect
 
 4. On adding one extra edge to a directed graph G, the number of strongly connected components...?
 
 => ... might or might not remain the same (depending on the graph)
 
 Correct
+
 
 5. Which of the following statements hold? (As usual n and m denote the number of vertices and
 edges, respectively, of a graph.) [Check all that apply]
@@ -63,11 +74,20 @@ False?
 
 Incorrect
 
+=> True to all
+
+Correct
+
+
 6. When does a directed graph have a topological ordering?
 
 => When it is directed acyclic
 
 Incorrect
+
+=> None of the other options
+
+Correct
 
 7. Suppose you implement the operations Insert and extract-min using a sorted array (from biggest to
 smallest). What is the worst case running time of insert and extract min respectively? (Assume the
@@ -79,6 +99,11 @@ Have to scan the entire array to find the min giving linear time extract-min
 => Theta(1) and Theta(n)
 
 Incorrect
+
+=> Theta(n) and theta(1)
+
+Correct
+
 
 8. Which of the following patterns in a computer program suggests that a heap data structure could
 provide a significant spreed-up? [Check all that apply]
