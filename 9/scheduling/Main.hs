@@ -19,7 +19,9 @@ instance Ord Job where
   (<=) (Job lw ll ls) (Job rw rl rs) =
     if ls == rs then rw <= lw
                 else ls <= rs
-total = foldl' (\(acum,time) (Job w l _) -> let end = l+time in (acum + (w*end),end)) (0,0) $ sort $ parseJobs testData2
+total xs =
+  foldl' (\(acum,time) (Job l w _) -> let end = l+time in (acum + (w*end),end)) (0,0)
+  $ sort $ parseJobs xs
 
 testData = "12\n\
   \8 50\n\
@@ -36,5 +38,5 @@ testData = "12\n\
   \10 58"
 
 testData2 = "2\n\
-  \5 3\n\
-  \2 1"
+  \3 5\n\
+  \1 2"
