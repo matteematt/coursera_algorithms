@@ -21,6 +21,11 @@ smallest value of t_i - s_i)
 
 Incorrect - Find a counterexample that only uses three requests
 
+=> At each iteration, pick the remaining request with the earliest finish time
+
+Correct. Let R_j denote the requests with the j earliest finish times. Prove by induction on j that
+this greedy algorithm selects the maximum-number of non-conflicting requests from S_j
+
 
 2. We are given as input a set of n jobs, where job j has a processing time p_j and a deadline d_j.
 Recall the definition of completion times C_j from the video lectures. Given a schedule (i.e. an
@@ -38,6 +43,11 @@ Incorrect - One of the proposed greedy rules work, Try and exchange argument
 
 Incorrect - There is a counterexample with two jobs (e.g. if all processing times are bigger than
 all deadlines.)
+
+=> Schedule the requests in increasing order of deadline d_j
+
+Correct. Proof by an induction argument, analogous to minimizing the weighted sum of completion
+times.
 
 
 3. In this problem you are given as input a graph T=(V,E) that is a tree (that is T is undirected,
@@ -77,6 +87,14 @@ Incorrect - Try to prove correctness by induction
 
 => Both algorithms always correctly determine whether or not a given tree has a perfect match
 
+=> Algorithm B always correctly determines whether or not a given tree graph has a perfect matching;
+algorithm A does not.
+
+Algorithm A can fail, for example, on a three-hop path. Correctness of algorithm B can be proved by
+induction on the number of vertices in T. Note that the tree property is used to argue that there
+must be a vertex with degree 1; if there is a perfect matching, it must include the edge incident to
+this vertex
+
 
 4. Consider an undirected graph G=(V,E) where every edge e ∈ E has a given cost c_e. Assume that all
 the edge costs are positive and distinct. Let T be a minimum spanning tree of G and P a shortest path
@@ -92,6 +110,7 @@ T must be a minimum spanning tree
 Correct - The positive statement has many proofs (e.g. via the cut property). for the negative
 statement, think about two different paths from s to t that contain a different number of edges.
 
+
 5. Suppose T is a minimum spanning tree of the connected graph G. Let H be a connected induced
 sub graph of G (i.e. H is obtained from G by taking some subset S ⊆ V of vertices, and taking all
 edges of E that have both endpoints in S. Also, assuming H is connected.) Which of the following is
@@ -105,3 +124,8 @@ Incorrect - Think about the cut property
 => For every G and H, these edges form a spanning tree (but not necessary minimum-cost) of H
 
 Incorrect - Suppose G is a triangle and H is an edge
+
+=> For every G and H, these edges are contained in some minimum spanning tree of H
+
+Correct - Proof via the cut property (cuts in G correspond to cutes in H with only fewer crossing
+edges)
