@@ -1,42 +1,60 @@
 module Main where
 
 import Data.List
+import Debug.Trace
+
+{-
+number of jobs
+weight length
+weight length
+-}
+
+data DJob = DJob Integer Integer Integer deriving Show
+
+instance Eq DJob where
+  (==) (DJob lw ll ld) (DJob rw rl rd) = ld == rd
+
+instance Ord DJob where
+  (<=) (DJob lw ll ld) (DJob rw rl rd) =
+    if rd == ld then lw <= rw
+                else ld <= rd
+  (compare) (DJob lw ll ld) (DJob rw rl rd) =
+    if rd == ld then compare rw lw
+                else compare rd ld
+
+data RJob = RJob Integer Integer Double deriving Show
+
+instance Eq RJob where
+  (==) (RJob lw ll ld) (RJob rw rl rd) = ld == rd
+
+instance Ord RJob where
+  (<=) (RJob lw ll ld) (RJob rw rl rd) =
+    if rd == ld then lw <= rw
+                else ld <= rd
 
 main :: IO ()
-main = undefined
+main = interact run
 
-data Job = Job Int Int Int deriving Show
+parseDJobs :: String -> [DJob]
+parseDJobs xs = map (\(w:l:_) -> DJob w l (w-l)) $ map (map (read) . words) $ tail $ lines xs
 
-parseJobs :: String -> [Job]
-parseJobs xs = map (\x -> let (w:l:_) = map (read) $ words x in Job w l (w-l))
-                  $ tail $ lines xs
+convertDJob :: DJob -> RJob
+convertDJob (DJob w l _) = RJob w l (fromInteger w / fromInteger l)
 
-instance Eq Job where
-  (==) (Job lw ll ls) (Job rw rl rs) =
-    lw == rw && ll == rl && ls == rs
+calcDJobs :: (Integer,Integer) -> DJob -> (Integer,Integer)
+calcDJobs (time,acum) (DJob w l d) =
+  let wt = w * (l + time)
+   in (time+l,acum+wt)
 
-instance Ord Job where
-  (<=) (Job lw ll ls) (Job rw rl rs) =
-    if ls == rs then rw <= lw
-                else ls <= rs
-total xs =
-  foldl' (\(acum,time) (Job l w _) -> let end = l+time in (acum + (w*end),end)) (0,0)
-  $ sort $ parseJobs xs
+calcRJobs :: (Integer,Integer) -> RJob -> (Integer,Integer)
+calcRJobs (time,acum) (RJob w l d) =
+  let wt = w * (l + time)
+   in (time+l,acum+wt)
 
-testData = "12\n\
-  \8 50\n\
-  \74 59\n\
-  \31 73\n\
-  \45 79\n\
-  \24 10\n\
-  \41 66\n\
-  \93 43\n\
-  \88 4\n\
-  \28 30\n\
-  \41 13\n\
-  \4 70\n\
-  \10 58"
+run :: String -> String
+run xs = let djobs = parseDJobs xs
+             rjobs = map convertDJob djobs
+             (_,dt) = foldl' calcDJobs (0,0) $ sort $ djobs
+             (_,rt) = foldl' calcRJobs (0,0) $ reverse $ sort $ rjobs
+          in show dt ++ " " ++ show rt
 
-testData2 = "2\n\
-  \3 5\n\
-  \1 2"
