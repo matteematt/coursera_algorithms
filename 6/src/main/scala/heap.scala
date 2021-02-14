@@ -47,6 +47,8 @@ class Heap[O](implicit order: Ordering[O]) {
     add(next)
   }
 
+
+  // There appears to be some bug with deleting unfortunately
   def cullBy(fn: O => Boolean): Unit = {
     val indices = for {
       i <- 0 to (arr.length-1)
@@ -57,7 +59,17 @@ class Heap[O](implicit order: Ordering[O]) {
     offsetIndices.foreach(i => deleteByIndex(i))
   }
 
-  override def toString(): String = arr.toString
+  // Throw error if this is not a valid min heap
+  def debug(): Unit = {
+    for (i <- 0 to (arr.length-1)) {
+      var parentI = ((i-1)/2).floor.toInt
+      parentI = if (parentI < 0) 0 else parentI
+      if (order.gt(arr(parentI),arr(i)))
+        throw new Error(s"Invalid heap \n$arr\non ${arr(parentI)} > ${arr(i)}")
+    }
+  }
+
+  override def toString(): String = arr.take(10).toString
 
   // Private Methods
 
@@ -101,11 +113,11 @@ class Heap[O](implicit order: Ordering[O]) {
     val rChild = 2 * index+2
     var smallest = index
 
-    if (lChild < arr.length && order.lt(arr(lChild),arr(smallest))) {
+    if (lChild <= (arr.length-1) && order.lt(arr(lChild),arr(smallest))) {
       smallest = lChild
     }
 
-    if (rChild < arr.length && order.lt(arr(rChild),arr(smallest))) {
+    if (rChild <= (arr.length-1) && order.lt(arr(rChild),arr(smallest))) {
       smallest = rChild
     }
 

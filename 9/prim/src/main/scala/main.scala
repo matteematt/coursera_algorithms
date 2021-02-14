@@ -71,41 +71,38 @@ object Prim {
 
   @tailrec
   private def go(
-    next: String,
+    from: String,
     seen: Set[String],
     heap: Heap[Edge],
     graph: Map[String,Node],
     mstLen: Int
   ): Int = {
-    // 1st Iter
-    val node = graph.get(next).get
-    seen.addOne(next)
-    println(seen)
+    val node = graph.get(from).get
+    seen.addOne(from)
 
     node.edges.filter(x => !seen.contains(x._1)).map {
-      case (to: String, weight: Int) => Edge(next,to,weight)
+      case (to: String, weight: Int) => Edge(from,to,weight)
     }.foreach(x => heap.add(x))
 
-    heap.cullBy(edge => seen.contains(edge.to))
-
-    // println(heap)
-
+    var chosenEdge = heap.popMin().get
+    while (seen.contains(chosenEdge.to) && !heap.isEmpty()) {
+      chosenEdge = heap.popMin().get
+    }
 
     if (heap.isEmpty) mstLen
     else {
-      val chosenEdge = heap.popMin().get
       go(chosenEdge.to,seen,heap,graph,mstLen + chosenEdge.weight)
     }
   }
 }
 
 object Main {
-  // ans not -3424815
+  // -3612829
 
   def main(args: Array[String]): Unit = {
     println("\n\nPrim's")
+
     val graph = File.parseFileToGraph("input")
-    println(graph)
     println(Prim.mst(graph))
   }
 
