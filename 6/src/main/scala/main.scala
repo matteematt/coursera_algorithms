@@ -1,4 +1,4 @@
-package dijkstra
+package coursera
 
 import scala.io.Source
 import scala.collection.mutable.Map

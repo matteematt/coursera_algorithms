@@ -1,7 +1,7 @@
 import org.scalatest.wordspec.AnyWordSpec
 
 import scala.collection.mutable.ArrayBuffer
-import dijkstra.Heap
+import coursera.Heap
 
 class FirstSpec extends AnyWordSpec  {
 

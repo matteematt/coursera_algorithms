@@ -1,4 +1,4 @@
-package dijkstra
+package coursera
 
 import scala.collection.mutable.ArrayBuffer
 import scala.annotation.tailrec
