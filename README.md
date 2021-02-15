@@ -14,3 +14,4 @@ Each directory contains the working out for each week on the course
 7. Median Maintenance, Haskell as I have already made a heap in scala for the last exercise
 8. 2-Sum algorithm, I did in Haskell writing multithreaded code, but a better solution could be done
 	 in future (`8/README.md`)
+9. Task Scheduling in Haskell, and Prim's MST in Scala

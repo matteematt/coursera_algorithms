@@ -1,0 +1,80 @@
+# Problem Set 10
+
+1. Suppose we are given a directed graph G=(E,E) in which every edge has a distinct positive edge
+weight. A directed graph is acyclic if it has no directed cycle. Suppose that we want to compute the
+maximum-weight acyclic subgraph of G (where the weight of a subgraph is the sum of its edge's
+weights). Assume that G is weakly connected, meaning that there is no cut crossing it in either
+direction
+Here is an analogue of Prim's algorithm for directed graphs. Start from an arbitrary vertex s,
+initialise S={s} and F=Theta. While S \= V, find the maximum-weight edge (u,v) with one endpoint in
+S and one endpoint in V-S. Add this edge to F, and add the appropriate endpoint to S
+Here is an analogue  of Kruskal's algorithm. Sort the edges from the highest to the lowest weight.
+Initialise F=Theta. Scan through the edges; at each iteration, add the current edge i to F if and
+only if it does not create a directed cycle.
+
+Which statement is true?
+
+=> Both algorithms always compute a maximum-weight acyclic subgraph
+Incorrect - Four vertices suffice for a counterexample
+
+=> Both algorithms might fail to compute a maximum-weight acyclic graph
+Correct - Any ideas for a correct algorithm
+
+
+2. Consider a connected undirected graph G with edge costs that are not necessarily distinct.
+Suppose we replace each edge cost C_e by -C_e; call this new graph G'. Consider running either
+Kruskal's or Prim's minimum spanning tree algorithm on G', with ties between edge costs broken
+arbitrarily, and possibly differently, in each algorithm. Which statement is true?
+
+=> Both algorithms compute a maximum-cost spanning tree of G, buy they might compute different ones
+Correct - Different tie-breaking rules generally yield different spanning trees
+
+
+3. Consider the following algorithm that attempts to compute a minimum spanning tree of a connected
+undirected graph G with distinct edge costs. First, sort the edges in decreasing order (i.e. the
+opposite of Krustkal's algorithm) Initialise T to be all edges of G. Scan through the edges (in the
+sorted order), and remove the current edge form T if and only if it lies on a cycle of T
+
+=> The algorithm always outputs a minimum spanning tree
+Correct - During the iteration in which an edge is removed, it was on a cycle C of T. By the sorted
+ordering, it must be the maximum-cost edge of C. By an exchange argument, it cannot be a member of
+any minimum spanning tree. Since every edge deletd by the algorithm belongs to no MST, and its
+output is a spanning tree (no cycles by construction, connected by the lonely cut corollary), its
+output must be the (unique) MST.
+
+
+4. Consider an undirected graph G=(V,E) where edges e in E has a cost c_e. A minimum bottlenech
+spanning tree T is a spanning tree that minimises the maximum edge cost max_(e in T)(c_e). Which of
+the following statements is true? Assume that the edge costs are distinct?
+
+=> A minimum bottleneck spanning tree is always a minimum spanning tree and a minimum spanning tree
+is always a minimum bottleneck spanning tree
+Incorrect - Is the minimum bottleneck spanning tree unique (even with distinct edge costs)?
+
+=> A minimum bottleneck spanning tree is not always a minimum spanning tree, but a minimum spanning
+tree is always a minimum bottleneck spanning tree
+Correct - For the positive statement, recall the following (from the correctness of Prim's
+algorithm): for every edge e of the MST, there is a cut (A,B) for which e is the cheapest one
+crossing it. This implies that every other spanning tree has a maximum edge cost at least as large.
+For the negative statement, use a triangle with one extra edge attached.
+
+
+5. You are given a connected undirected graph G with distinct edge costs, in adjacency list
+representation. You are also given the edges of a minimum spanning tree T of G. This question asks
+how quickly you can recompute the MST if we change the cost of a single edge. Which of the
+following are true [RECALL: it is not known how to deterministically compute a MST from scratch in
+O(m) time, where em is the number of edges of G.][Check all that apply]
+
+=> None of them?
+Incorrect
+
+=> For both of the suppose e is in T, then we can compute in a deterministic time
+
+Correct, but not all of the answers
+
+For e in T and increase e -> let A,B be the two connected components of T - {e}. Edge e no longer
+belongs to the new MST if and only if is is no longer the cheapest edge crossing the cut (A,B) (this
+can be checked in O(m) time).
+
+For e in T and decreases e -> The MST does not change (by the cut property), so no-computation is
+needed
