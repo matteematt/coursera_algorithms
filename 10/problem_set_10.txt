@@ -18,7 +18,7 @@ Which statement is true?
 Incorrect - Four vertices suffice for a counterexample
 
 => Both algorithms might fail to compute a maximum-weight acyclic graph
-Correct - Any ideas for a correct algorithm
+Correct - Any ideas for a correct algorithm?
 
 
 2. Consider a connected undirected graph G with edge costs that are not necessarily distinct.
