@@ -2,22 +2,22 @@ package coursera
 
 import scala.collection.mutable.Map
 
-private case class UFVal(x: Int, var leader: Option[UFVal])
+private case class UFVal[T](x: T, var leader: Option[UFVal[T]])
 
 /*
  * Supports lazy unions and path compression,
  * but not union by rank
  */
-class UnionFind() {
+class UnionFind[T]() {
   private var setC = 0
-  private val collection = Map[Int,UFVal]()
+  private val collection = Map[T,UFVal[T]]()
 
   // Public methods
   def setCount() = setC
 
-  def find(x: Int): Option[Int] = findUFVal(x).map(_.x)
+  def find(x: T): Option[T] = findUFVal(x).map(_.x)
 
-  def merge(x: Int, y: Int): Unit = {
+  def merge(x: T, y: T): Unit = {
     val xLead = findUFVal(x)
     val yLead = findUFVal(y)
     if (xLead != None && yLead != None && yLead != xLead) {
@@ -26,7 +26,7 @@ class UnionFind() {
     }
   }
 
-  def makeSet(x: Int): Unit = {
+  def makeSet(x: T): Unit = {
     if (collection.contains(x)) return
     else {
       setC += 1
@@ -36,8 +36,8 @@ class UnionFind() {
 
   // Private methods
 
-  private def findUFVal(x: Int): Option[UFVal] = {
-    def go(ufval: UFVal): UFVal = {
+  private def findUFVal(x: T): Option[UFVal[T]] = {
+    def go(ufval: UFVal[T]): UFVal[T] = {
       if (ufval.leader != None) {
         ufval.leader = Some(go(ufval.leader.get))
         ufval.leader.get
