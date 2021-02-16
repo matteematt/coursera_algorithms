@@ -5,12 +5,8 @@ import scala.collection.mutable.Map
 private case class UFVal(x: Int, var leader: Option[UFVal])
 
 /*
- * Need to implement:
- * makeSet
- * find
- * merge
- * setCount
- * Make for int first and then generic
+ * Supports lazy unions and path compression,
+ * but not union by rank
  */
 class UnionFind() {
   private var setC = 0
@@ -25,7 +21,7 @@ class UnionFind() {
     val xLead = findUFVal(x)
     val yLead = findUFVal(y)
     if (xLead != None && yLead != None && yLead != xLead) {
-      xLead.get.leader = Some(yLead.get)
+      xLead.get.leader = yLead
       setC -= 1
     }
   }
@@ -39,13 +35,22 @@ class UnionFind() {
   }
 
   // Private methods
+
   private def findUFVal(x: Int): Option[UFVal] = {
+    def go(ufval: UFVal): UFVal = {
+      if (ufval.leader != None) {
+        ufval.leader = Some(go(ufval.leader.get))
+        ufval.leader.get
+      } else ufval
+    }
     collection.get(x).map { ufval =>
-      var parent = ufval
-      while (parent.leader != None) {
-        parent = parent.leader.get
-      }
-      parent
+      go(ufval)
+    }
+  }
+
+  def debug(): Unit = {
+    for (k <- collection.keys) {
+      println(collection.get(k).get)
     }
   }
 }
