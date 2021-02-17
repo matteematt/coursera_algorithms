@@ -40,11 +40,46 @@ object C1 {
   }
 }
 
+object C2 {
+
+  def closeNumbers(x: Int, bits: Int, dist: Int = 1): List[Int] = {
+    (0 to (bits-1)).toList.map(b => (1 << b) ^ x).flatMap {
+      n => if (dist == 1) List(n) else n :: closeNumbers(n, bits, dist-1)
+    }.distinct
+  }
+
+  def bitsToInt(x: String): Int = {
+    x.split("\\s+").map(_.toInt).fold(0)((t,b) => if (b==1) t*2+1 else t*2)
+  }
+
+  def parseFile(file: String): Tuple2[Int,List[Int]] = {
+    Source.fromFile(C1.filePath(file)).getLines.toList match {
+      case h :: t => {
+        val bits = h.split("\\s+").tail.head.toInt
+        val nums = t.map(bitsToInt(_))
+        (bits,nums)
+      }
+    }
+  }
+
+  def run(file: String): Int = {
+    val uf = new UnionFind[Int]()
+    val (bits,nums) = parseFile(file)
+    nums.foreach(uf.makeSet(_))
+    uf.contents.foreach { x =>
+      closeNumbers(x,bits,2).foreach(cn => uf.merge(x,cn))
+    }
+    uf.setCount
+  }
+}
+
 object Main {
 
   def main(args: Array[String]): Unit = {
     println("\n\nClustering")
-    println(C1.run("clustering1")) // ans 106
+    println(C1.run("clustering1"))
+
+    println(C2.run("clustering2"))
   }
 
 }

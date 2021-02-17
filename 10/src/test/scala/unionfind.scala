@@ -87,6 +87,12 @@ class UnionFindSpec extends AnyWordSpec {
           setCount -= 1
         }
       }
+
+      "return a list of all the unique values added" in {
+        val uf = new UnionFind[Int]()
+        List(1,1,1,5,6) foreach (x => uf.makeSet(x))
+        assert(uf.contents() == Set(1,5,6))
+      }
     }
   }
 

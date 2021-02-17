@@ -15,6 +15,8 @@ class UnionFind[T]() {
   // Public methods
   def setCount() = setC
 
+  def contents() = collection.keys
+
   def find(x: T): Option[T] = findUFVal(x).map(_.x)
 
   def merge(x: T, y: T): Unit = {
