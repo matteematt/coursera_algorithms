@@ -3,8 +3,6 @@ package coursera
 import scala.io.Source
 
 object C1 {
-  val k = 4
-
   case class Edge(n1: Int, n2: Int, e: Int)
 
   def filePath(x: String) = s"/home/matt/documents/coursera_algorithms/10/src/main/resources/${x}.txt"
@@ -15,8 +13,7 @@ object C1 {
     }
   }
 
-  def run(file: String): Int = {
-
+  def run(file: String, k: Int = 4): Int = {
     val edgeList = parseFileToEdgeList(file).sortWith((x,y) => x.e.compareTo(y.e) < 0)
     val edgeArr = edgeList.toArray
     val nodeList = edgeList.map{case Edge(n1,n2,_) => List(n1,n2)}.flatten.distinct
@@ -25,11 +22,17 @@ object C1 {
     nodeList.foreach(x => uf.makeSet(x))
 
     var i = 0
-    while (uf.setCount >= 4) {
+    var done = false
+    while (!done) {
       val n1 = edgeArr(i).n1
       val n2 = edgeArr(i).n2
       if (uf.find(n1) != uf.find(n2)) {
-        uf.merge(n1,n2)
+        if (uf.setCount == k) {
+          done = true
+          i -= 1
+        } else {
+          uf.merge(n1,n2)
+        }
       }
       i += 1
     }
@@ -41,8 +44,7 @@ object Main {
 
   def main(args: Array[String]): Unit = {
     println("\n\nClustering")
-    println(C1.run("c1t1"))
-    println(C1.run("clustering1"))
+    println(C1.run("clustering1")) // ans 106
   }
 
 }
