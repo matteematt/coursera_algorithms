@@ -1,0 +1,79 @@
+# Problem Set 11
+
+1. Consider an alphabet with five letters {a,b,c,d,e} and suppose we know the frequencies
+{0.32,0.25,0.2,0.18,0.05} respectively. What is the expected number of bits used by Huffman's coding
+scheme to encode a 1000-letter document
+
+=> 2230
+Correct
+
+
+2. Under a Huffman encoding of n symbols, how long (in terms of number of bits) can a codeword
+possibly be?
+
+The longest is when the combined group is always one of the smallest, which will create a chain down
+the 1's branch. In this case you get (n-1)
+
+=> n-1
+Correct - For the lower bound, take frequencies proportional to powers of 2. For the upper bound,
+note that the total number of merges is exactly n-1
+
+
+3. Which of the following statements holds for Huffman's coding scheme?
+
+* If the most frequent letter has frequency less than 0.33 then all letters will be coded with at
+least two bits
+True by elimination
+
+* A letter with frequency at least 0.5 might get encoded with two or more bits
+No, anything with more than 0.5 must be only one bit (0)
+
+* If a letter's frequency is at least 0.4 then the letter will be certainly be coded with only one
+bit
+No, for 0.4, 0.4, 0.2 then one of the 0.4s will be coded with 2 bits
+
+* If the most frequency letter has frequency less than 0.5, then all letters will be coded with more
+than one bit
+No, for the above example then one of the 0.4s will be encoded with only 1 bit
+
+Correct - Such a letter will endure a merge in at least two iterations: the last one (which involves
+all letters), and at least one previous iteration. In the penultimate iteration, if the letter has
+not yet endured a merge, at least one of the two other remaining subtrees has a cumulative frequency
+at least (1-0.33)/2 > 0.33 so the letter will get merged this iteration
+
+
+4. Which of the following is true for our dynamic programming algorithm for computing a max-weight
+independent set of a path graph (assuming there are no ties)
+
+* If a vertex is excluded from the optimal solution of a sub problem, then it is excluded from the
+optimal solution of all bigger problems
+No
+
+* As long as the input graph has at least two vertices, the algorithm never selects the maximum
+weight-vertex
+Not true
+
+* If a vertex is excluded from the optimal solution of two consecutive sub problems, then it is
+excluded from the optimal solutions of all bigger sub problems
+I think this is true
+
+* The algorithm always selects the maximum-weight vertex.
+No
+
+=> If a vertex is excluded from the optimal solution of two consecutive sub problems, then it is
+excluded from the optimal solutions of all bigger sub problems
+Correct - By induction, since the optimal solution to a problem depends only on the solutions of the
+previous two subproblems
+
+
+5. Recall our dynamic programming algorithm for computing the max-weight independent set of a path
+graph. Consider the following proposed extension to more general graphs. Consider an undirected
+graph with positive vertex weights. For a vertex v, obtain the graph G'(v) by deleting v and its
+incident edges from G, and contains the graph G''(v) from G by deleting v, o, its neighbours, and
+all of the corresponding incident edges from G. Let OPT(G) denote the value of a maximum-weight
+independent set of a graph H. Consider the following formula OPT(G) = max{OPT(G'(v)),w_v +
+OPT(G''(v))}, where v is an arbitrary vertex of G of weight w_v, Which of the following statements
+are true?
+
+=> The formula is correct in path graphs but not always correct in trees
+Incorrect - Do weighted independent sets in trees have a nice optimal structure?
