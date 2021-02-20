@@ -46,6 +46,18 @@ object Main {
     go(root,0)
   }
 
+  def symbolSet(root: HuffNode): List[Tuple2[String,String]] = {
+    def go(node: HuffNode, seq: String): List[Tuple2[String,String]] = {
+      if (node.leaf) (s"${node.weight}",seq) :: Nil
+      else {
+        val l = node.left.map(x => go(x,seq + "0"))
+        val r = node.right.map(x => go(x,seq + "1"))
+        List(l,r).filter(_.isDefined).flatMap(_.get)
+      }
+    }
+    go(root,"")
+  }
+
   def run(file: String): Tuple2[Int,Int] = {
     val heap = new Heap[HuffNode]()
     parseHuffNodes(file).foreach(x => heap.add(x))
@@ -58,22 +70,25 @@ object Main {
     while (heap.length > 1) {
       val smaller = heap.popMin().get
       val larger = heap.popMin().get
+      println(s"Combining ${smaller.symbol} and ${larger.symbol}" )
       val comb = HuffNode(
         larger.symbol + smaller.symbol,
         smaller.weight + larger.weight,
-        Some(larger), Some(smaller))
+        Some(smaller), Some(larger))
       heap.add(comb)
     }
 
     val rootNode = heap.popMin().get
     println(rootNode)
+    println(symbolSet(rootNode).mkString("\n"))
 
     (minDepth(rootNode),maxDepth(rootNode))
   }
 
   def main(args: Array[String]): Unit = {
     println("\n\nHuffman Coding:")
-    // println(run("t2"))
+    println(run("t3"))
+    println(run("bitesize"))
     println(run("input"))
   }
-}
+
