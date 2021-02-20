@@ -10,6 +10,8 @@ class Heap[O](implicit order: Ordering[O]) {
   // Public Methods
   def isEmpty(): Boolean = arr.length == 0
 
+  def length(): Int = arr.length
+
   def peekMin(): Option[O] = {
     if (arr.length == 0) None
     else Some(arr(0))
