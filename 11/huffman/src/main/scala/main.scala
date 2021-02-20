@@ -82,7 +82,7 @@ object Main {
     println(rootNode)
     println(symbolSet(rootNode).mkString("\n"))
 
-    (minDepth(rootNode),maxDepth(rootNode))
+    (maxDepth(rootNode),minDepth(rootNode))
   }
 
   def main(args: Array[String]): Unit = {
