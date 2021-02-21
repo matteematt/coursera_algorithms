@@ -3,7 +3,7 @@ module Main where
 import qualified Data.Map as M
 
 main :: IO ()
-main = undefined
+main = interact mainData
 
 parseInput :: String -> [Int]
 parseInput xs = map (read) $ tail $ lines $ xs
@@ -22,15 +22,18 @@ calcMax xs = let m = M.fromList [(0,0),(1,head xs)]
 calcNodes :: [Int] -> M.Map Int Int -> [(Int,Int)]
 calcNodes xs m = go (reverse xs) ((length $ M.keys m) - 1) m []
   where go :: [Int] -> Int -> M.Map Int Int -> [(Int,Int)] -> [(Int,Int)]
-        go _ 0 _ ss = ss
-        go (w:ws) i m ss = if (M.lookup (i-1) m) >= ((+) <$> M.lookup (i-2) m <*> (Just w))
-                              then go ws (i-1) m ss
-                              else go (tail ws) (i-2) m ((w,i) : ss)
+        go _ i _ ss      | i < 1 = ss
+        go (w:ws) i m ss | otherwise = if (M.lookup i m) == M.lookup (i-1) m
+                                          then go ws (i-1) m ss
+                                          else go (tail ws) (i-2) m ((w,i) : ss)
+
+checkList = [1,2,3,4,17,117,517,997] :: [Int]
 
 run :: String -> String
 run input = let xs = parseInput input
                 m = calcMax xs
-             in show $ calcNodes xs m
+                nodes = calcNodes xs m
+             in show $ filter (\(_,n) -> n `elem` checkList) nodes
 
 tc1 = "10\n\
   \280\n\
