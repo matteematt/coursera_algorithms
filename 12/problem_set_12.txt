@@ -1,0 +1,95 @@
+# Problem set 12
+
+1. Consider a variation of the Knapsack problem where we have two knapsacks, with integer
+capacities W1 and W2. As usual, we are given n items with positive values and positive integer
+weights. We want to pick subsets S1, S2 with maximum total value
+(i.e. Sum_(i in s1).v_i + Sum_(i in s2).v_i) such that the total weights of S1 and S2 are at most W1
+and W2 respectively Assume that every items fits in either knapsack (i.e. W_i <= min(W1,W2)) for
+every item i).
+Consider the following two algorithm approaches (1) Use the algorithm from lecture to pick a
+max-value feasible solution S_1 for the first knapsack, and then run it again on the remaining items
+to pick a max-value feasible solution S_2 for the second knapsack. (2) use the algorithm from
+lecture to pick a max-value feasible solution for a knapsack with capacity W1 + W2, and then split
+the chosen items into two sets S1, S2 that have size at most W1 and W2 respectively. Which of the
+following statements is true?
+
+=> Neither algorithm is guaranteed to produce an optimal feasible solution to the original problem
+Correct - Indeed. Can you devise from scratch a dynamic programming algorithm that correctly solves
+the problem?
+
+
+2. Recall the dynamic programming algorithms from lecture fro the Knapsack and sequence alignment
+problems. Both fill a two-dimensional table using a double-for loop. Suppose we reverse the order of
+the two for loops (i.e. cut and paste the second for loop in front of the first for loop, without
+otherwise changing the text in any way.) Are the resulting algorithms still well defined and
+correct?
+
+=> The sequence alignment algorithm remains well defined and correct after reversing the order of
+the for loops, but the Knapsack algorithm does not
+Incorrect - Are the necessary sub problem solutions available for constant time lookup?
+
+=> Neither algorithm remains well defined and correct after reversing the order of the for loops
+Incorrect - Are the necessary sub problem solutions available for constant time lookup?
+
+=> Both algorithms remain well defined and correct after reversing the order of the for loops
+
+
+3. Consider an instance of the optimal binary search tree problem with 7 keys (say, 1,2,3,4,5,6,7 in
+sorted order) and frequencies 0.05,0.4,0.08,0.04,0.1,0.1,0.23 respectively. What is the
+minimum-possible average search time of a binary search tree with these keys?
+
+=> 2.18
+Correct
+
+
+4. The following problems take as input two strings X and Y, of length m and n, over some alphabet
+Sigma. Which of them can be solved in O(mn) time? [Check all that apply]
+
+* Consider the following variation of sequence alignment. Instead of a single gap penalty a_gap
+you're given two numbers a and b. The penalty of inserting k gaps in a row is now defined as ak+b
+rather than ka_gap. Other penalties (for matching two non-gaps) are defined as before. The goal is
+to compute the minimum-possible penalty of an alignment under this new cost model
+Yes
+Correct - Variation on the original sequence aliment dynamic program. With each sub problem, you
+need to keep track of what gaps you insert, since the costs you incur in the current position depend
+on whether or not the previous sub problems inserted gaps. Blows up the number of sub problems and
+running time by a constant factor
+
+* Assume that X and Y have the same length n. Does there exist a permeation f, mapping each i in
+{1,2..n} to a distinct f(i) in {1,2..n} such that X_i = Y_f(i) for every i=1,2..n?
+Yes
+Correct - This problem can be solved in O(n) time, without dynamic programming. Just count the
+frequency of each symbol in the string. The permeation f exists if and only if every symbol occurs
+exactly the same number of times in each string
+
+* Compute the length of the longest common subsequence of X and Y. Recall that a subsequence need
+not be consecutive. For example, the longest common subsequence of "abcdef" and "afebcd" is "abcd".)
+Yes
+Correct - Similar dynamic programming to sequence alignment, with one sub problem for each X_i and
+Y_j. Alternatively, this reduces the sequence aliment by setting the gap penalty to 1 and making
+the penalty of matching two different characters to be very large
+
+* Compute the length of the longest common substring of X and Y. (A substring is a consecutive
+subsequence of a string. So "bcd" is a substring of "abcdef", whereas "bdf" is not)
+Yes
+Correct - Similar dynamic programming to sequence alignment, with one sub problem for each X_i and Y_j
+
+
+5. Recall our dynamic programming algorithms for maximum-weight independent set, sequence alignment,
+and optimal binary search trees. The space requirements of these algorithms are proportional to the
+number of sub problems that get solved: Theta(n) (where n is the number of vertices), Theta(mn)
+(where m,n are the lengths of the two strings), and Theta(n^2) (where n is the number of keys),
+respectively.
+Suppose we only want to compute the value of an optimal solution (the final answer of the first,
+forward pass) and don't care about reconstructive the optimal solution. How much space do you then
+really need to run each of these algorithms?
+
+=> Theta(1), Theta(n), and Theta(n)
+Incorrect - How do you avoid keeping track of Theta(n^2) sub problems when computing an optimal
+binary search tree?
+
+=> Theta(1), Theta(n), and Theta(n^2)
+Correct - For maximum-weight independent set, you only need to remember the two most recent
+sub problems. For sequence alignment, you only need to remember the sub problems for the current and
+previous values of i (and for all values of j). For optimal binary search trees, previous
+sub problems remain relevant throughout the entire computation
