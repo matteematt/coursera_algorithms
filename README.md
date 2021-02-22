@@ -17,3 +17,4 @@ Each directory contains the working out for each week on the course
 9. Task Scheduling in Haskell, and Prim's MST in Scala
 10. Clustering algorithms with union-find data structure in Scala
 11. Huffman Coding in Scala, Max-weight independent set of a path in Haskell
+12. Knapsack Problem in Haskell

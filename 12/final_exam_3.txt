@@ -1,0 +1,80 @@
+# Final Exam 3
+
+1. Consider a connected un-directed graph with distinct edge costs. Which of the following are true
+[click all that apply]
+
+* The minimum spanning tree is unique
+True
+
+* Suppose the edge e is the most expensive edge contained in the cycle C. Then e does not belong to
+any minimum spanning tree
+No, it would be part of a path
+
+* Suppose the edge e is the cheapest edge that crosses the cut (A,B). Then e belongs to every
+minimum spanning tree
+True
+
+* Suppose the edge e is not the cheapest edge that crosses the cut (A,B). Then e does not belong to
+any minimum spanning tree
+True
+
+
+2. You are given a connected undirected graph G with distinct edge costs, in adjacency list
+representation. You are also given the edges of a minimum spanning tree T of G. This question asks
+how quickly you can recompute the MST if we change a single edge. Which of the following are true
+[check all that apply]
+
+=> They are all true
+
+
+3. Which of the following graph functions can be sped up using the heap data structure?
+
+* Krustkal's minimum spanning tree
+True
+
+* Dijkstra's single-source shortest-path
+True
+
+* Our dynamic programming algorithm for computing a maximum-weight independent set of a path graph
+False
+
+* Prim's minimum-spanning tree algorithm
+True
+
+
+4. Which of the following problems reduce, in a straightforward way, to the minimum spanning tree
+problem? [check all that apply]
+
+* Given a connected undirected graph G=(V,E) with positive edge costs, compute a minimum-cost F(E
+such that the graph (V,E-F) is acyclic
+False
+
+* The maximum-cost spanning tree problem. That is, among all spanning trees of a connected graph
+with edge costs, compute one with the maximum-possible sum of edge costs
+False
+
+* The single-source shortest-path problem
+True
+
+* The maximum bottleneck spanning tree problem. That is, among all spanning trees of a connected
+graph with edge costs, compute one with the minimum-possible maximum edge cost
+True
+
+
+5. Recall the greedy clustering algorithm from lecture and the maximum-spacing objective function.
+Which of the following are true? [Check all that apply]
+
+* This greedy clustering algorithm can be viewed as Prim's minimum spanning tree, stopped early.
+True
+
+* Suppose the greedy algorithm produces a k-clustering with spacing S. Then, if x,y are two points
+in a common cluster of this k-clustering, the distance between x and y is at most S.
+True
+
+* If the greedy algorithm produces a k-clustering with spacing S, then the distance between every
+pair of points chosen by the greedy algorithm (one pair per iteration) is at most S.
+True
+
+* If the greedy algorithm produces a k-clustering with spacing S, then every other k-clustering has
+a spacing at most S.
+False
