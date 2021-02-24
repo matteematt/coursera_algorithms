@@ -18,6 +18,9 @@ True
 any minimum spanning tree
 True
 
+Wrong
+b true?
+
 
 2. You are given a connected undirected graph G with distinct edge costs, in adjacency list
 representation. You are also given the edges of a minimum spanning tree T of G. This question asks
@@ -25,6 +28,8 @@ how quickly you can recompute the MST if we change a single edge. Which of the f
 [check all that apply]
 
 => They are all true
+
+Correct
 
 
 3. Which of the following graph functions can be sped up using the heap data structure?
@@ -40,6 +45,11 @@ False
 
 * Prim's minimum-spanning tree algorithm
 True
+
+Incorrect
+
+c must also be true
+Incorrect
 
 
 4. Which of the following problems reduce, in a straightforward way, to the minimum spanning tree
@@ -59,6 +69,10 @@ True
 * The maximum bottleneck spanning tree problem. That is, among all spanning trees of a connected
 graph with edge costs, compute one with the minimum-possible maximum edge cost
 True
+Incorrect
+
+All answers are correct
+Incorrect
 
 
 5. Recall the greedy clustering algorithm from lecture and the maximum-spacing objective function.
@@ -78,3 +92,100 @@ True
 * If the greedy algorithm produces a k-clustering with spacing S, then every other k-clustering has
 a spacing at most S.
 False
+
+Incorrect
+
+All True
+Incorrect
+
+
+6. We are given as input a set of n jobs, where job j has a processing time p_j, and a deadline d_j.
+Recall the definition completion times C_j from the video lectures. Given a schedule (i.e. an
+ordering of the jobs), we define the lateness l_j of job j as the amount of time C_j - d_J after its
+deadline that the job completes, or as 0 if C_j <= d_j
+Our goal is the minimise the total lateness, sum of j for l_j
+Which of the following greedy rules produces an ordering that minimises the total lateness? You can
+assume all processing times are distinct
+
+=> Schedule the requests in increasing order of product p_j . d_j
+=> Schedule the requests in increasing order of processing time p_j
+=> Schedule the requests in increasing order of deadline d_j
+
+Incorrect
+
+None of the options
+Correct
+
+
+7. Consider an alphabet with five letters, {a,b,c,d,e} and suppose we know the frequencies
+{0.28,0.27,0.2,0.15,0.1} respectively. What is the expected number of bits used by Huffman's coding
+scheme to encode a 1000 letter document?
+
+=> 2250
+
+Correct
+
+
+8. Which of the following extensions of the Knapsack problem can be solved in time polynomial i n,
+the number of items, and M, the largest number that appears in the input? [Check all that apply]
+
+* You are given n items with positive integer values and sizes, as usual, and two positive integer
+capacities W_1 and W_2. The problem is to pack items into these two knapsacks (of capacities W_1 and
+W_2) to maximise the total value of the packed items. You are not allowed to split a single items
+between the two knapsacks.
+No
+
+* You are given n items with positive integer values and sizes, and a positive integer capacity W,
+as usual. You are also given a budget k <= n on the number of items that you can use in a feasible
+solution. The problem is to compute the max-value set of at most k items with the total size at most
+W.
+Yes
+
+* You are given n items with positive integer values and sizes, and a positive integer capacity W,
+as usual. The problem is to compute the max-value set of items with total size exactly W. If no such
+set exists, the algorithm should correct detect that
+Yes
+
+* You are given n items with positive integer values and sizes, as usual, and m positive integer
+capacities W_1,W_2,...,W_m. These denote capacities of m different knapsacks, where m could be as
+large as Theta(m). You are not allowed to split a single items between the two knapsacks
+No
+
+Incorrect
+
+a is true too
+Correct
+
+9. The following problem all take as input two strings X and Y, of length m and n, over some
+alphabet SIGMA. Which of the following can be solved in O(mn) time? [Check all that apply]
+
+* Assume that X and Y have the same length n. Does there exist a permutation f, mapping each i in
+{1,2..n} to a distinct f(i) in {1,2..n}, such that X_i = Y_f(i) for every i=1,2..n?
+Yes
+
+* Compute the length of the longest subsequence of X and Y. (Recall a subsequence need not be
+consecutive)
+Yes
+
+* Compute the length of a longest common substring of X and Y. (A substring is a consecutive
+subsequence of a string)
+Yes
+
+* Consider the following variation of sequence aliment. Instead of a single gap penalty a_gap
+you're given two numbers a and b. The penalty for of inserting k gaps in a row is now defined as
+ak+b, rather than ka_gap. Other penalties (for matching two non-gaps) are defined as before. The
+goal is to compute the minimum-possible penalty of an aliment under this new cost model.
+Yes
+
+Correct
+
+
+10. Consider an instance of the optimal binary search tree problem with 7 keys (1,2,3,4,5,6,7 in
+sorted order) and frequencies (0.2,0.05,0.17,0.1,0.2,0.25) respectively. What is the
+minimum-possible average search time of a binary search tree with these keys?
+
+=> 2.29
+Incorrect
+
+=> 2.23
+Correct
