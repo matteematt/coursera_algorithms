@@ -18,3 +18,4 @@ Each directory contains the working out for each week on the course
 10. Clustering algorithms with union-find data structure in Scala
 11. Huffman Coding in Scala, Max-weight independent set of a path in Haskell
 12. Knapsack Problem in Haskell
+13. Floyd-Warshall Algorithm to calculate all-pairs shortest path problem in Haskell
