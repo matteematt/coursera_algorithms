@@ -54,18 +54,18 @@ run input =
 exec :: Int -> AdjMat -> AdjMat
 exec maxNode am =
   foldl' (\amk k ->
-    foldl' (\ami i ->
+    trace ("k=" ++ show k) (foldl' (\ami i ->
       foldl' (\amj j -> updateAM k i j amj) ami size)
-    amk size)
+    amk size))
   am size
   where size = [1..maxNode]
 
 updateAM :: Int -> Int -> Int -> AdjMat -> AdjMat
 updateAM k i j am = let viaK = getAMVal (i,k) am + getAMVal (k,j) am
                         withoutK = getAMVal (i,j) am
-                     in if trace (mconcat [show k," ",show i," ",show j]) (withoutK > viaK)
-                           then trace ("New lowest " ++ show viaK) (M.insert (i,j) viaK am)
-                           else trace ("Old val " ++ show withoutK) (M.insert (i,j) withoutK am)
+                     in if withoutK > viaK
+                           then M.insert (i,j) viaK am
+                           else M.insert (i,j) withoutK am
 
 
 getAMVal :: (Int,Int) -> AdjMat -> InfInt
@@ -106,10 +106,3 @@ testInput = "Ignore\n\
   \2 3 3\n\
   \2 1 4"
 
-
-ti2 = "4 5\n\
-    \1 2 1\n\
-    \1 3 4\n\
-    \2 4 2\n\
-    \3 4 3\n\
-    \4 1 -4"
