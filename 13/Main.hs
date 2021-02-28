@@ -2,11 +2,20 @@ module Main where
 
 import qualified Data.Map as M
 import Data.List
+-- import Data.List.Split
+import Debug.Trace
 
 type AdjMat = M.Map (Int,Int) InfInt
 
 -- head tail length
 data Edge = Edge Int Int Int deriving Show
+
+-- prettyPrint :: AdjMat -> String
+-- prettyPrint am =
+  -- let xs = map (\(_,i) -> parse i) $ M.toList am :: [String]
+   -- in unlines $ map unwords $ chunksOf 4  xs
+  -- where parse i = case i of (BInt x) -> show x ++ " "
+                            -- Inf      -> "Inf "
 
 -- Only works with +Inf as that is all we need for this problem
 data InfInt = BInt Int | Inf deriving (Show, Ord, Eq)
@@ -29,36 +38,56 @@ instance Num InfInt where
 -- run
 
 main :: IO ()
-main = undefined
+main = interact (show . run)
 
-testAM = setup testInput
+(testAM,maxNode) = setup testInput
+testDone = exec maxNode testAM
 
-exec :: AdjMat -> AdjMat
-exec am =
+run :: String -> Maybe InfInt
+run input =
+  let (am,maxNode) = setup input
+      am' = exec maxNode am
+   in if checkNegCycle maxNode am'
+         then Nothing
+         else Just $ shortestPath maxNode am'
+
+exec :: Int -> AdjMat -> AdjMat
+exec maxNode am =
   foldl' (\amk k ->
     foldl' (\ami i ->
       foldl' (\amj j -> updateAM k i j amj) ami size)
     amk size)
   am size
-  where size = [1..4]
+  where size = [1..maxNode]
 
 updateAM :: Int -> Int -> Int -> AdjMat -> AdjMat
 updateAM k i j am = let viaK = getAMVal (i,k) am + getAMVal (k,j) am
                         withoutK = getAMVal (i,j) am
-                     in if withoutK > viaK
-                           then M.insert (i,j) viaK am
-                           else am
+                     in if trace (mconcat [show k," ",show i," ",show j]) (withoutK > viaK)
+                           then trace ("New lowest " ++ show viaK) (M.insert (i,j) viaK am)
+                           else trace ("Old val " ++ show withoutK) (M.insert (i,j) withoutK am)
 
 
 getAMVal :: (Int,Int) -> AdjMat -> InfInt
 getAMVal ij am = case M.lookup ij am of (Just x) -> x
                                         Nothing -> Inf
 
+checkNegCycle :: Int -> AdjMat -> Bool
+checkNegCycle maxNode am =
+  foldr (\i x -> if let (Just v) = M.lookup (i,i) am in v < (BInt 0) then True else x) False [1..maxNode]
+
+-- Do I want to ignore the diagonals?
+shortestPath :: Int -> AdjMat -> InfInt
+shortestPath maxNode am =
+  minimum
+  $ map (\x -> let (Just i) = M.lookup x am in i)
+  $ [(i,j)|i<-[1..maxNode],j<-[1..maxNode],i /= j]
+
 -- Init Adjacency Matrix
 
-setup :: String -> AdjMat
+setup :: String -> (AdjMat,Int)
 setup input = let (am,maxNode) = readEdgeList $ parseEdgeList input
-               in foldl' (\amx i -> M.insert (i,i) 0 amx) am [1..maxNode]
+               in (foldl' (\amx i -> M.insert (i,i) 0 amx) am [1..maxNode], maxNode)
 
 parseEdgeList :: String -> [Edge]
 parseEdgeList xs =
@@ -75,4 +104,12 @@ testInput = "Ignore\n\
   \3 4 2\n\
   \4 2 -1\n\
   \2 3 3\n\
-  \2 4 1"
+  \2 1 4"
+
+
+ti2 = "4 5\n\
+    \1 2 1\n\
+    \1 3 4\n\
+    \2 4 2\n\
+    \3 4 3\n\
+    \4 1 -4"
