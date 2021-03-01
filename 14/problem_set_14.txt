@@ -1,0 +1,81 @@
+# Problem Set 14
+
+1. Which of the following statements cannot be true, given the current state of knowledge?
+
+=> Some NP-complete problems are polynomial-time solvable, and some NP-complete problems are not
+polynomial-time solvable
+
+Correct - A polynomial-time algorithm for a single NP-complete automatically yields polynomial-time
+algorithms for all NP-complete algorithms (i.e implies P=NP)
+
+
+2. Let TSP1 denote the following problem: given a TSP instance in which all edge costs are positive
+integers, compute the value of an optimal TSP tour. Let TSP2 denote: given a TSP instance in which
+all edge costs are positive integers, and a positive integer T, decide whether or not there is a TSP
+tour with a total length at most T. Let HAM1 denote: given an undirected graph, either return the
+edges of a Hamiltonian cycle (a cycle that visits each vertex exactly once), or correctly decide
+that the graph has no such cycle. Let HAM2 denote: given a undirected graph, decide whether or not
+the graph contains a Hamiltonian cycle
+
+=> If TSP2 is polynomial-time solvable, then so is TSP1. If HAM2 is polynomial-time solvable, then
+so is HAM1.
+
+Correct - Given a polynomial-time algorithm for TSP2, use it repeatedly while binary searching over
+the choice of T to solve TSP1 (the number of iterations necessary is logarithmic in the sizes of
+input numbers, which is polynomial in the input size). Use a polynomial-time algorithm for HAM2 to
+solve HAM1 as follows. First, run HAM2 on the graph. If it says "no", report "no". Otherwise, delete
+some edge (in effect, guessing there is also a Hamiltonian cycle without it) and run HAM2 again. If
+it says "yes", iterate on the new smaller graph. If it says "no", restore the edge (it lies on ever
+Hamiltonian cycle, do you see why?) and move onto the next edge. If HAM2 originally said "yes", you
+will identify (in O(m) iterations) a sequence of successful edge deletions, and the remaining edges
+will constitute a Hamiltonian cycle of the original graph.
+
+
+3. Assume that P/=NP. Consider undirected graphs with nonnegative edge lengths. Which of the
+following statements can be solved in polynomial time?
+Hint: The Hamiltonian path problem is: given an undirected graph with n vertices, decide whether or
+not there is a (cycle free) path with n-1 edges that visits each vertex exactly once. You can use
+the fact that the Hamiltonian path problem is NP-complete. There are relatively simple reductions
+from the Hamiltonian path problem to 3 of the 4 problems below
+
+=> Amongst all spanning trees of the graph, compute one with minimum-possible maximum degree.
+(Recall the degree of a vertex is the number of incident edges)
+
+Incorrect - A graph has a spanning tree with maximum degree at most 2 if any only if the graph has a
+Hamiltonian cycle
+
+=> Amongst all spanning trees of the graph, compute one with the smallest-possible number of leaves
+
+Incorrect - A graph has a spanning tree with maximum degree at most 2 if any only if the graph has a
+Hamiltonian cycle
+
+
+4. Choose the strongest true statement.
+
+=> All three of the other assertions are true
+
+Correct - Vertex covers and independent sets are complements (take the complement of one and you get
+the other). Thus solving one problem allows you to solve the other with Theta(n) postprocessing,
+where n is the number of vertices
+
+
+5. Which of the following statements is also true?
+
+=> Consider a TSP instance in which every edge cost is negative. The dynamic programming algorithm
+covered in the video lectures might not correctly compute the optimal (i.e. minimum sum of edge
+lengths) tour of this instance
+
+Incorrect - The algorithm and its correctness proof never uses the fact that edge costs are
+nonnegative
+
+=> Consider a TSP instance in which every edge cost is the Euclidean distance between two points in
+the place. Deleting a vetex and all of its incident edges cannot increase the optimal (e.g. minimum
+sum of edge lengths) tour.
+
+Correct - Take the optimal tour in the original instance. Now, instead of visiting the deleted
+vertex v, skip straight from v's predecessor to its successor on the tour. Because Euclidean
+distance satisfies the "Triangle Inequality", this shortcut only decreases the overall distance
+traveled. The best tour can of course only be better.Take the optimal tour in the original instance.
+Now, instead of visiting the deleted vertex v, skip straight from v's predecessor to its
+successor on the tour. Because Euclidean distance satisfies the "Triangle Inequality", this shortcut
+only decreases the overall distance traveled. The best tour can of course only be better.
