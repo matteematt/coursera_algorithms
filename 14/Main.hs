@@ -54,6 +54,8 @@ buildDistanceMatrix input =
 -- TODO: don't hard code the value!
 n = length $ tail $ lines tc1
 
+beforeEnd = exec (buildDistanceMatrix tc1) (buildBaseCase n)
+
 buildBaseCase :: Int -> M.Map (Int,Int) InfNum
 buildBaseCase n =
   foldl' (\m s -> M.insert (s,1) Inf m) emptys
@@ -84,6 +86,42 @@ siCombinations r n = filter (\x -> x .&. 1 /= 0) $ combinations 0 0 r n []
                   in combinations set' (i+1) (r-1) n subsets
                           ) [at..(n-1)]
 
+-- Main recurrence
+exec :: DistMatrix -> M.Map (Int,Int) InfNum -> M.Map (Int,Int) InfNum
+exec c a =
+  foldl' (\a m ->
+    foldl' (\a si ->
+      foldl' (\a j ->
+        let klist = filter (\k -> k /= j) $ cIntToList n si
+            best = minimum $ map (\k ->
+              let (Just ckj) = M.lookup (k,j) c
+                  withoutJ = clearBit si j
+                  mem = memLookup a (withoutJ,k)
+               in mem + (BNum ckj)
+              ) klist
+         in M.insert (si,j) best a
+        ) a $ filter (\x -> x /= 1) $ cIntToList n si
+      ) a $ siCombinations m n
+    ) a [2..n]
+
+-- Should miss return 0 or Inf?
+memLookup :: M.Map (Int,Int) InfNum -> (Int,Int) -> InfNum
+memLookup m sj =
+  case M.lookup sj m of (Just v) -> v
+                        Nothing -> BNum 0
+
+end :: DistMatrix -> M.Map (Int,Int) InfNum -> InfNum
+end c a =
+  minimum
+  $ map (\j ->
+    let (Just cj1) = M.lookup (j,1) c
+        (Just asj) = M.lookup (fullset,j) a
+     in asj + BNum cj1
+    ) [2..n]
+  where fullset = fullBitsSet n
+
+fullBitsSet :: Int -> Int
+fullBitsSet n = foldl' (\acum _ -> 1 .|. (acum `shiftL` 1)) 0 [1..n]
 
 tc1 = "3\n\
   \0 0\n\
