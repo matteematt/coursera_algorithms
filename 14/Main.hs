@@ -83,19 +83,17 @@ exec n c a =
     foldl' (\a si ->
       foldl' (\a j ->
         let klist = filter (\k -> k /= j) $ cIntToList n si
-            biiiiiiii = map (\k ->
+            best = minimum $ map (\k ->
               let (Just ckj) = M.lookup (j,k) c
                   withoutJ = clearBit si (j-1)
                   mem = memLookup a (withoutJ,k)
                in mem + (BNum ckj)
               ) klist
-            best = minimum biiiiiiii
          in M.insert (si,j) best a
         ) a $ filter (\x -> x /= 1) $ cIntToList n si
       ) a $ siCombinations m n
     ) a [2..n]
 
--- Should miss return 0 or Inf?
 memLookup :: M.Map (Int,Int) InfNum -> (Int,Int) -> InfNum
 memLookup m sj =
   case M.lookup sj m of (Just v) -> v
