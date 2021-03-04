@@ -2,8 +2,9 @@
 
 The implementation works correctly, but uses too much memory to run on the entire dataset.
 
-However, if you plot the points you can realise that points 11 and 12 overlap. You can then split
-the dataset into 2 halves, one containing points 0-12 and the second containing 12-23. This computes
+However, if you plot the points you can realise that the graph can be split into two tors where
+points 11 and 12 overlap are in both. You can then split
+the dataset into 2 halves, one containing points 0-12 and the second containing 11-23. This computes
 almost instantly, you can then add the values you get and then subtract the eucilian distance
 between points 11 and 12 twice to account for the fact that you have them once in each sub-tor, but
 never in the final tor.
