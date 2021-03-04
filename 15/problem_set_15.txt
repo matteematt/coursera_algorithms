@@ -1,0 +1,136 @@
+# Problem Set 15
+
+1. Recall the vertex cover problem from the video lectures: given an undirected graph (with no
+parallel edges), compute a minimum-size subset of vertices that includes at least one endpoint in
+ever edge. Consider the following greedy algorithm, given a graph G:(1) initialise S=0; (2) while S
+is not a vertex cover of G: (2a) let F denote the edges with neither endpoint in S; (2b) let e be
+some edge F; (2c) add both endpoints of e to S; (3) return S.
+Consider the following statement: for every graph G with n vertices, this greedy algorithm returns a
+vertex cover with size at most f(n) times that of an optimal (minimum-size) vertex cover. Which of
+the following is the smallest choice of function f(n) for which the statement is true?
+[Hint: Suppose the greedy algorithm picks an edge e with endpoints u and v. What can you say about
+every feasibly solution to the problem?]
+
+=> O(log(n))
+Incorrect - The key to understanding the algorithm's performance is the set M of edges chosen in step
+2b (one edge per iteration of the main while loop). Do you see why every vertex cover has size at least
+M?
+
+=> O(n)
+Incorrect - The key to understanding the algorithm's performance is the set M of edges chosen in step
+2b (one edge per iteration of the main while loop). Do you see why every vertex cover has size at least
+M?
+
+=> 2
+
+
+2. In the set cover problem, you are given m sets S1,...,Sm, each a subset of common set U with size
+|U|=n. The goal is to select as few of these sets as possible, subject to the constraint that the
+union of the chosen sets is all of U. (You can assume that U_(i <- 1 to m)Si = U.) For example, if
+the given sets are {1,2},{2,3}, and {3,4}, then the optimal solution consists of the sets {1,2} and
+{3,4}.
+Here is a natural iterative greedy algorithm. First, initialise C=0, where C denotes the sets chosen
+so far. The main loop is: as long as the union U_(s in c)S of the sets chosen so far its not the
+entire set U:
+* Let S_i be a set that includes the maximum-possible numbers of elements not in previously-chosen
+sets (i.e. that maximises |Si - U_(s in c)S|).
+* Add Si to C.
+Consider the following statement: for every instance of the set cover problem (with |U| = n), this
+greedy algorithm returns a set cover with size at most f(n) times that of an optimal (minimum-size)
+set cover. Which of the following is the smallest choice of function for which this statement is
+true?
+[Hint: what's the minimum-possibly progress that the greedy algorithm can make in each iteration, as
+a function of the size of an optimal set cover and of the number of elements that have not been
+covered?]
+
+=> O(n^0.5)
+Incorrect - Let OPT denote the minimum size of a set cover.  The key observation is: in a
+given iteration of the greedy algorithm, if there are still xxx elements not covered by the sets
+chosen thus far, then the next set chosen will cover at least x/OPTx/OPTx/OPT new elements (why?).
+
+=> O(log_n)
+Correct -  Let OPT denote the minimum size of a set cover. The key observation is: in a given iteration
+of the greedy algorithm, if there are still xxx elements not covered by the sets chosen thus far,
+then the next set chosen will cover at least x/OPTx/OPTx/OPT new elements (why?).
+
+The key observation implies that the greedy algorithm, after choosing OPT sets, will have
+covered at least a constant fraction of UUU.  (Since (1−1/OPT)OPT(1-1/OPT)^{OPT}(1−1/OPT)OPT is
+roughly 1/e1/e1/e, where e=2.718...e=2.718...e=2.718....)  Thus after O(log⁡n)O(\log n)O(logn)
+phases of choosing OPT sets, the greedy solution must cover all of UUU.
+
+
+3. Suppose you are given m sets S1,...,Sm, each of a subset of a common set U. The goal is to choose
+2 of the m sets, Si and Sj, to maximize the size |Si u Sj| of their union. One natural heuristic is
+to use a greedy algorithm: (1) choose the first set Si to be as large as possible, breaking ties
+arbitrarily; (ii) choose the second set Sj to maximize |Si u Sj| (i.e. as the set that includes as
+many elements as possible that are not already in Si) again breaking ties arbitrarily. For example,
+if the given sets are {1,2},{2,3}, and {3,4}, then the algorithm might pick the set {1,2} in the
+	first step; if it does so, it definitely picks the set {3,4} in the second step (for an objective
+	function value of 4)
+Consider the following statement: for every instance of the above problems, the greedy algorithm
+chooses two sets Si,Sj such that |Si u Sj| is at least c times the maximum size of the union of the
+two given sets. Which of the following is the largest choice of the constant c for which this
+statement is true?
+
+=> 1/2
+Incorrect - The first set alone already achieves this guarantee (why?).  How much further progress
+is made by the second set?
+
+=> 2/3
+Incorrect - The first set alone already achieves this guarantee (why?).  How much further progress
+is made by the second set?
+
+=> 1
+
+
+4. Consider the following job scheduling problem. There are m machines, all identical. There are n
+jobs, and job j has a size pj. Each job must be assigned to exactly one machine. The load of a
+machine is the sum of the sizes of the jobs that get assigned to it. The makespan of an assignment
+of jobs is the maximum load of a machine; this is the quantity we want to minimise. For example,
+suppose there are two machines and 4 jobs with sizes 7,8,5,6. Assigning the first two jobs to the
+first machine and the last two jobs to the second machine yields machine loads 15 and 11, for a
+make span of 15. A better assignment puts the first and last jobs on the first machine and the second
+and third jobs on the second machine, for a make span of 13.
+Consider the following greedy algorithm. Iterate through the jobs j=1,2,3...n one-by-one. When
+consider job j, assign it to the machine the currently has the smallest load (breaking ties
+arbitrarily). For example, in the four-job instance above, this algorithm would assign the first job
+to the first machine, the second job of the second machine, the third job to the first machine, and
+the fourth job to the second machine (for a suboptimal makespan of 14).
+Consider the following statement: for every such job scheduling instance, this greedy algorithm
+computes a job assignment with makespan at most c times of an optimal (minimum-makespan) job
+assignment. Which of the following is the smallest choice of the constance c that makes this
+statement true?
+[Hint: let A and B denote the average and maximum sizes (A=(Sum_j pj)/m and B=max_j pj). Try to
+relate both the optimal solution and the output of the greedy algorithm A,B.]
+
+=> 6/5
+Incorrect - Suppose there are m(m−1)m(m-1)m(m−1) jobs of size 1, followed by a single job of size
+m.
+
+=> 2
+Correct - For the upper bound, let AAA and BBB denote the total and maximum job sizes (A=∑jpjA =
+\sum_j p_jA=∑jpj and B=max⁡jpjB = \max_j p_jB=maxpj). Certainly OPT≥BOPT
+\ge BOPT≥B. Prove that OPT≥A/mOPT \ge A/mOPT≥A/m, as well (with equality only if OPT spreads
+out the jobs perfectly). By considering the iteration that schedules the job that determines the
+makespan, prove that the makespan of the greedy algorithm is at most B+A/mB + A/mB+A/m.
+
+
+5. Consider the same makespan-minimisation job scheduling problem studied in the previous problem.
+Now suppose that, prior to running the greedy algorithm in the previous problem, we first sort the
+jobs from biggest to smallest. For example, in the four-job instance discussed in the previous
+problem, the jobs would be considered in the order 8,7,6,5, and the greedy algorithm would then
+produce an optimal schedule, with makespan 13.
+Consider the following statement: for every such job scheduling instance, the greedy algorithm (with
+this sorting preprocessing step) computes a job assignment with makespan at most c times that of an
+optimal (minimum-makespan) job assignment. Which of the following is the smallest choice of the
+constance c for the statment is true?
+
+=> 3/2
+Correct - We refine the previous solution by replacing the lower bound BBB (previously the max job
+size) with a different quantity. Consider the job that determines the makespan. The interesting case
+is where this job jjj is not one of the first mmm jobs (check this!). By the greedy ordering, then,
+pj≤pm+1p_j \le p_{m+1}pj≤pm+1. Since every assignment must place two of the first
+m+1m+1m+1 jobs on a common machine, OPT is at least 2pm+12p_{m+1}2pm+1 and hence pjp_jpj
+is at most OPT/2. Since the load of jjj's machine was at most OPT before it was assigned (as in the
+previous problem), the bound follows. Optional: can you prove a bound that is even better than
+3/23/23/2?
