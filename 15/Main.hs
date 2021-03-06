@@ -1,11 +1,11 @@
 module Main where
 
 import qualified Data.Map as M
+import qualified Data.Set as S
 import Data.List
 import Debug.Trace
 
 main :: IO ()
--- main = undefined
 main = interact run
 
 data City = City Int Double Double deriving (Show, Eq)
@@ -19,12 +19,6 @@ parseInput input =
   $ tail
   $ lines input
 
-buildDistMap :: M.Map Int City -> M.Map (Int,Int) Double
-buildDistMap cm =
-  let n = length $ M.keys cm
-      bm = M.fromList $ zip [(i,i)|i<-[1..n]] (repeat 0) :: M.Map (Int,Int) Double
-      perms = [(x,y)|x<-[1..n],y<-[1..n],x/=y]
-   in foldl' (\dm (x,y) -> M.insert (x,y) (getDist cm dm (x,y)) dm) bm perms
 
 getDist :: M.Map Int City -> M.Map (Int,Int) Double -> (Int,Int) -> Double
 getDist cm dm (x,y) =
@@ -38,50 +32,42 @@ eDist :: (Double,Double) -> (Double,Double) -> Double
 eDist (x1,y1) (x2,y2) = sqrt $ p2 (x2 - x1) + p2 (y2 - y1)
   where p2 x = x ^ 2
 
--- Run
+-- How many cities in each direction (index) to consider
+-- smaller is faster but less accurate
+searchWidth = 1000 :: Int
 
-cm = parseInput tc1
-n = length $ M.keys cm
-dm = buildDistMap cm
-
-ts = TS cm dm (M.fromList [(1,True)]) [(1,0.0)] 1
-(TS _ _ _ beforeEnd _) = foldl' (\ts _ -> exec ts n) ts [2..n]
-afterEnd = end beforeEnd dm
+data TS = TS (M.Map Int City) (S.Set Int) [(Double,Int)] Int
 
 run :: String -> String
-run input = let cm = parseInput input
-                n = length $ M.keys cm
-                dm = buildDistMap cm
-                ts = TS cm dm (M.fromList [(1,True)]) [(1,0.0)] 1
-                (TS _ _ _ beforeLast _) = foldl' (\ts _ -> exec ts n) ts [2..n]
-                completed = end beforeLast dm
-             in show $ floor $ sum $ map (\(_,d) -> d) $ trace (show $ reverse completed) completed
+run input =
+  let cm = parseInput input
+      n = length $ M.keys cm
+      toVisit = S.fromList [1..n]
+      ts = TS cm toVisit [(0.0,1)] 1
+      (TS _ _ beforeLast _) = foldl' (\ts i -> trace (concat [show i,"/",show n]) exec ts) ts [2..n]
+      afterLast = end cm beforeLast
+   in show $ floor $ sum $ map (\(d,_) -> d) afterLast
 
-data TS = TS (M.Map Int City) (M.Map (Int,Int) Double) (M.Map Int Bool) ([(Int,Double)]) (Int)
+exec :: TS -> TS
+exec (TS cm toVisit visited curr) =
+  let (Just (City _ cx cy)) = M.lookup curr cm
+      index = S.findIndex curr toVisit
+      toVisit' = S.deleteAt index toVisit
+      lb = let x = index - searchWidth in if x < 0 then 0 else x
+      ub = let x = index + searchWidth - lb in if x >= length toVisit' then (length toVisit') else x
+      candidateIndexes = S.take ub $ S.drop lb toVisit'
+      candidates = S.map (\i -> let (Just (City _ x y)) = M.lookup i cm in (eDist (x,y) (cx,cy),i)) candidateIndexes
+      (dist,next) = S.findMin candidates
+      visited' = (dist,next) : visited
+   in toVisit' `seq` dist `seq` next `seq` TS cm toVisit' visited' next
 
--- As they are sorted by X and the distance has to be bigger than X the closest ones should be near the
--- current value, so instead of just sorting all 34000, only take the ones that are x number of cities either
--- side the current index
--- trace ((show $ length ordered') ++ "/" ++ (show $ length $ M.keys cm))
-exec :: TS -> Int -> TS
-exec (TS cm dm visited ordered curr) n =
-  let candidateIndexes = trace ((show $ length ordered') ++ "/" ++ (show $ length $ M.keys cm)) [(i)|i<-[1..n],M.member i visited == False]
-      candidates = map (\i -> let (Just x) = M.lookup (curr,i) dm in (x,i)) candidateIndexes
-      (dist,best) = head $ sortBy bestCity candidates
-      visited' = M.insert best True visited
-      ordered' = (best,dist) : ordered
-   in visited' `seq` dist `seq` best `seq` TS cm dm visited' ordered' best
-
-end :: [(Int,Double)] -> M.Map (Int,Int) Double -> [(Int,Double)]
-end ordering dm = let (latest,_) = head ordering
-                      (Just dist) = M.lookup (latest,1) dm
-                   in (1,dist) : ordering
-
-bestCity :: (Double,Int) -> (Double,Int) -> Ordering
-bestCity (d1,i1) (d2,i2) =
-  if compare d1 d2 == EQ
-     then compare i1 i2
-     else compare d1 d2
+end :: M.Map Int City -> [(Double,Int)] -> [(Double,Int)]
+end cm visited =
+  let (_,currI) = head visited
+      (Just (City _ cx cy)) = M.lookup currI cm
+      (Just (City _ lx ly)) = M.lookup 1 cm
+      dist = eDist (cx,cy) (lx,ly)
+   in (dist,1) : visited
 
 -- Path : 1 3 2 5 6 4 1
 -- TSP:15.2361 (15)
