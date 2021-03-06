@@ -46,7 +46,7 @@ run input =
       ts = TS cm toVisit [(0.0,1)] 1
       (TS _ _ beforeLast _) = foldl' (\ts i -> trace (concat [show i,"/",show n]) exec ts) ts [2..n]
       afterLast = end cm beforeLast
-   in show $ floor $ sum $ map (\(d,_) -> d) afterLast
+   in show $ floor $ sum $ map fst afterLast
 
 exec :: TS -> TS
 exec (TS cm toVisit visited curr) =
@@ -54,7 +54,7 @@ exec (TS cm toVisit visited curr) =
       index = S.findIndex curr toVisit
       toVisit' = S.deleteAt index toVisit
       lb = let x = index - searchWidth in if x < 0 then 0 else x
-      ub = let x = index + searchWidth - lb in if x >= length toVisit' then (length toVisit') else x
+      ub = let x = index + searchWidth - lb in if x >= length toVisit' then length toVisit' else x
       candidateIndexes = S.take ub $ S.drop lb toVisit'
       candidates = S.map (\i -> let (Just (City _ x y)) = M.lookup i cm in (eDist (x,y) (cx,cy),i)) candidateIndexes
       (dist,next) = S.findMin candidates
