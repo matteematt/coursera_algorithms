@@ -59,14 +59,18 @@ run input = let cm = parseInput input
 
 data TS = TS (M.Map Int City) (M.Map (Int,Int) Double) (M.Map Int Bool) ([(Int,Double)]) (Int)
 
+-- As they are sorted by X and the distance has to be bigger than X the closest ones should be near the
+-- current value, so instead of just sorting all 34000, only take the ones that are x number of cities either
+-- side the current index
+-- trace ((show $ length ordered') ++ "/" ++ (show $ length $ M.keys cm))
 exec :: TS -> Int -> TS
 exec (TS cm dm visited ordered curr) n =
-  let candidateIndexes = trace ((show $ length ordered') ++ "/" ++ (show $ length $ M.keys cm))[(i)|i<-[1..n],M.member i visited == False]
+  let candidateIndexes = trace ((show $ length ordered') ++ "/" ++ (show $ length $ M.keys cm)) [(i)|i<-[1..n],M.member i visited == False]
       candidates = map (\i -> let (Just x) = M.lookup (curr,i) dm in (x,i)) candidateIndexes
       (dist,best) = head $ sortBy bestCity candidates
       visited' = M.insert best True visited
       ordered' = (best,dist) : ordered
-   in  TS cm dm visited' ordered' best
+   in visited' `seq` dist `seq` best `seq` TS cm dm visited' ordered' best
 
 end :: [(Int,Double)] -> M.Map (Int,Int) Double -> [(Int,Double)]
 end ordering dm = let (latest,_) = head ordering
