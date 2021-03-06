@@ -22,6 +22,9 @@ Incorrect - The key to understanding the algorithm's performance is the set M of
 M?
 
 => 2
+Correct - Let M be the edges chosen in step 2b (one edge per iteration of the main loop). M is
+matching --- that is the edges are pairwise disjoint. Thus, every vertex cover has size at least
+|M|. The size of the output of the greedy algorithm is exactly 2|M|.
 
 
 2. In the set cover problem, you are given m sets S1,...,Sm, each a subset of common set U with size
@@ -80,7 +83,17 @@ is made by the second set?
 Incorrect - The first set alone already achieves this guarantee (why?).  How much further progress
 is made by the second set?
 
-=> 1
+=> 3/4
+Correct - Let OPT denote the maximum size of the union of two of the given sets.  The first set
+SiS_iSi chosen by the greedy algorithm has size at least OPT/2OPT/2OPT/2 (why?).  Let xxx
+denote the number of elements in an optimal solution not already included in SiS_iSi.  Then
+the second set SjS_jSj chosen by the greedy algorithm includes at least x/2x/2x/2 elements not
+covered already by SiS_iSi (why?).  Taken together, the two sets then include at least
+OPT∗(3/4)OPT*(3/4)OPT∗(3/4) elements (why?).
+
+The example in the problem description already shows that no constant better than 3/43/43/4 is
+possible (if the greedy algorithm chooses the set {2,3}\{2,3\}{2,3} in the first iteration, then its
+solution covers only 3 elements, while the optimal solution covers all 4).
 
 
 4. Consider the following job scheduling problem. There are m machines, all identical. There are n
