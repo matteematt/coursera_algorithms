@@ -5,6 +5,7 @@ import Data.List
 import Debug.Trace
 
 main :: IO ()
+-- main = undefined
 main = interact run
 
 data City = City Int Double Double deriving (Show, Eq)
@@ -39,32 +40,33 @@ eDist (x1,y1) (x2,y2) = sqrt $ p2 (x2 - x1) + p2 (y2 - y1)
 
 -- Run
 
--- cm = parseInput tc1
--- n = length $ M.keys cm
--- dm = buildDistMap cm
---
--- beforeEnd = exec n cm dm (M.fromList [(1,True)]) [(1,0.0)] 1
--- afterEnd = end beforeEnd dm
+cm = parseInput tc1
+n = length $ M.keys cm
+dm = buildDistMap cm
+
+ts = TS cm dm (M.fromList [(1,True)]) [(1,0.0)] 1
+(TS _ _ _ beforeEnd _) = foldl' (\ts _ -> exec ts n) ts [2..n]
+afterEnd = end beforeEnd dm
 
 run :: String -> String
 run input = let cm = parseInput input
                 n = length $ M.keys cm
                 dm = buildDistMap cm
-                beforeLast = exec n cm dm (M.fromList [(1,True)]) [(1,0.0)] 1
+                ts = TS cm dm (M.fromList [(1,True)]) [(1,0.0)] 1
+                (TS _ _ _ beforeLast _) = foldl' (\ts _ -> exec ts n) ts [2..n]
                 completed = end beforeLast dm
-             in show $ floor $ sum $ map (\(_,d) -> d) $ completed
+             in show $ floor $ sum $ map (\(_,d) -> d) $ trace (show $ reverse completed) completed
 
-exec :: Int -> M.Map Int City -> M.Map (Int,Int) Double -> M.Map Int Bool -> [(Int,Double)] -> Int -> [(Int,Double)]
-exec n cm dm visited ordered curr =
-  let candidateIndexes = [(i)|i<-[1..n],M.member i visited == False]
+data TS = TS (M.Map Int City) (M.Map (Int,Int) Double) (M.Map Int Bool) ([(Int,Double)]) (Int)
+
+exec :: TS -> Int -> TS
+exec (TS cm dm visited ordered curr) n =
+  let candidateIndexes = trace ((show $ length ordered') ++ "/" ++ (show $ length $ M.keys cm))[(i)|i<-[1..n],M.member i visited == False]
       candidates = map (\i -> let (Just x) = M.lookup (curr,i) dm in (x,i)) candidateIndexes
       (dist,best) = head $ sortBy bestCity candidates
       visited' = M.insert best True visited
       ordered' = (best,dist) : ordered
-   in if length ordered' == n
-         then ordered'
-         else trace ((show $ length ordered') ++ "/" ++ (show $ length $ M.keys cm))
-                    (exec n cm dm visited' ordered' best)
+   in  TS cm dm visited' ordered' best
 
 end :: [(Int,Double)] -> M.Map (Int,Int) Double -> [(Int,Double)]
 end ordering dm = let (latest,_) = head ordering
