@@ -49,20 +49,18 @@ buildDistanceMatrix input =
   let cityCoords = M.fromList $ zip [1..] (parseCityCoords input) :: M.Map Int (Double,Double)
       distances = M.fromList $ zip [(1,1)] [0] :: DistMatrix
       perms = [(x,y)|x<-[1..length cityCoords],y<-[1..length cityCoords]]
-   in foldl' ((\dm (c1,c2) -> M.insert (c1,c2) (getDist cityCoords dm c1 c2) dm)) distances perms
+   in foldl' (\dm (c1,c2) -> M.insert (c1,c2) (getDist cityCoords dm c1 c2) dm) distances perms
 
 buildBaseCase :: Int -> M.Map (Int,Int) InfNum
 buildBaseCase n =
   foldl' (\m s -> M.insert (s,1) Inf m) emptys
-  $ map (\x -> x `shiftL` 1) [1..(n-1)]
-    where emptys = M.fromList $ zip [(1,1)] [(BNum 0)]
+  $ map (`shiftL` 1) [1..(n-1)]
+    where emptys = M.fromList $ zip [(1,1)] [BNum 0]
 
 
 -- converts a S represented as a Int into the constituent cities
 cIntToList :: Int -> Int -> [Int]
-cIntToList n s =
-  concat $
-  map (\i -> if s .&. (1 `shiftL` i) /= 0 then [i+1] else []) [0..n]
+cIntToList n s = [i + 1 |i<-[0..n],s .&. (1 `shiftL` i) /= 0]
 
 -- Creates a S of {1,2..n} for size m that contains 1
 siCombinations :: Int -> Int -> [Int]
@@ -71,7 +69,7 @@ siCombinations r n = filter (\x -> x .&. 1 /= 0) $ combinations 0 0 r n []
           combinations set at r n subsets =
             if r == 0
               then set : subsets
-              else concat $ map (\i ->
+              else concatMap (\i ->
                 let set' = set .|. (1 `shiftL` i)
                   in combinations set' (i+1) (r-1) n subsets
                           ) [at..(n-1)]
@@ -82,15 +80,15 @@ exec n c a =
   foldl' (\a m ->
     foldl' (\a si ->
       foldl' (\a j ->
-        let klist = filter (\k -> k /= j) $ cIntToList n si
+        let klist = filter (/= j) $ cIntToList n si
             best = minimum $ map (\k ->
               let (Just ckj) = M.lookup (j,k) c
                   withoutJ = clearBit si (j-1)
                   mem = memLookup a (withoutJ,k)
-               in mem + (BNum ckj)
+               in mem + BNum ckj
               ) klist
          in M.insert (si,j) best a
-        ) a $ filter (\x -> x /= 1) $ cIntToList n si
+        ) a $ filter (/= 1) $ cIntToList n si
       ) a $ siCombinations m n
     ) a [2..n]
 
