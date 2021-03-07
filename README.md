@@ -21,3 +21,4 @@ Each directory contains the working out for each week on the course
 13. Floyd-Warshall Algorithm to calculate all-pairs shortest path problem in Haskell
 14. Held–Karp algorithm to calculate the travelling salesman problem in Haskell
 15. Travelling salesman problem using approximation algorithm in Haskell
+16. Papadimitriou's Algorithmn to solve 2-SAT problem in Scala
