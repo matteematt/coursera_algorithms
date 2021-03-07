@@ -1,0 +1,64 @@
+# Problem Set 16
+
+1. Which of the following statements is NOT true about the generic local search algorithm?
+
+=> The generic local search algorithm is guaranteed to eventually converge to an optimal solution
+Correct - Only a locally optimal solution
+
+
+2. Suppose we apply local search to the minimum cut problem. Given an undirected graph, we begin
+with an arbitrary cut (A,B). We check if there is a vertex v such taht switching v from one group to
+the other would strictly decrease the number of edges crossing the cut. (Also, we disallow vertex
+switches that would cause A or B to become empty.) If there is a such a vertex, we switch it from
+one group to the other; if there are many such vertices, we pick one arbitrarily to switch. If there
+are no such vertices, then we return the currently locally optimal cut (A,B). Which of the following
+statements is true about this local search algorithm?
+
+=> This local search algorithm is guaranteed to compute a cut for which the number of crossing edges
+is at most twice the minimum possible
+Incorrect - Is it even possible that there is a cut of value 0, but this algorithm outputs a cut
+with a positive number of crossing edges.
+
+=> If this local search algorithm is guaranteed to terminate in a polynomial number of iterations,
+it would immediately imply P=NP.
+Incorrect - This is wrong on two counts. First, while the maximum cut problem is NP-complete, the
+mimimum cut problem is polynomial-time solvable (some of you will recall the random contraction
+algorithm from Part 1). Second, local search only produces a locally optimal solution, and does not
+in general solve the (global) optimisation problem
+
+=> This local search algorithm is guaranteed to terminate in a polynomial number of iterations
+
+
+3. In the maximum k-cut problem, the input is an undirected graph G=(V,E), and each edge has a
+nonnegative weight w_e. The goal is to partition V into k non-empty pieces A1,...,AK to maximise the
+total weight of the cut edges (i.e. edges with endpoints in different A_i's). That maximum cut
+problem (as studied in lecture) corresponds to the special case where k = 2.
+Consider applying local search to the maximum k-cut problem: (i) start with an arbitrary k-cut; (ii)
+repeat: If possible move a vertex from one set A_i to another set A_j so as to strictly increase the
+total weight of the cut edges; (iii) once no such move is possible, halt.
+Consider the following statement: for every instance of the maximum k-cut problem, every local
+maximum has objective function value at least f(k) times that of the maximum possible. Which of the
+following is the biggest choice of function f(k) for which this statement is true?
+
+=> (k-1)/k
+
+
+4. Suppose X is a random variable that has an expected value 1. What is the probability that X is 2
+or larger? (Choose the strongest statement that is guaranteed to be true.)
+
+=> At most 50%
+Incorrect - Counterexample: suppose X is either equal to 2 (with probability 2/3) or -1 (with
+probability 1/3).
+
+=> At most 100%
+Correct - This statement is trivially true, and the rest have counterexamples (e.g. if X is either
+equal to 2 (with probability 2/3) or -1 (with probability 1/3))
+
+
+5. Suppose X is a random variable that is always nonnegative and has expected value 1. What is the
+probability that X is 2 or larger? (Choose the strongest statement that is guaranteed to be true.)
+
+=> 0
+Incorrect - What if X is equally likely to be 0 or 2?
+
+=> At most 50%
