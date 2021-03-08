@@ -27,6 +27,8 @@ algorithm from Part 1). Second, local search only produces a locally optimal sol
 in general solve the (global) optimisation problem
 
 => This local search algorithm is guaranteed to terminate in a polynomial number of iterations
+Correct - Every iteration strictly decreases the number of crossing edges, so there can only be m
+iterations
 
 
 3. In the maximum k-cut problem, the input is an undirected graph G=(V,E), and each edge has a
@@ -62,3 +64,5 @@ probability that X is 2 or larger? (Choose the strongest statement that is guara
 Incorrect - What if X is equally likely to be 0 or 2?
 
 => At most 50%
+Correct - The proof is the same as that in the "Random walks on a line" video. If X >= 2 with
+probability p, then by nonnegativity of X we have E|X| >= 2p. Since E|X| = 1, p <= 1/2.
