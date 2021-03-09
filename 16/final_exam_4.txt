@@ -1,0 +1,138 @@
+# Final exam 4
+
+1. Of the following dynamic programming algorithms covered in the lecture, which ones always perform
+O(1) work per subproblem?
+
+* The dynamic programming algorithm for the sequence alignment problem
+=> True, just checking alignment of a value regardless of string length
+
+* The Bellman-Ford shortest path algorithm
+=> True, it is just checking whether to include the current node
+
+* The dynamic programming algorithm for the optimal binary search tree problem
+=> False, it may need to do work to keep the tree balanced and correct
+
+* The Floyd-Warshall all-pairs shortest-path algorithm
+=> True, it is just checking whether to include the current node
+
+* The dynamic programming algorithm for the knapsack problem
+=> True, it is just calculating whether to include and item or not
+
+
+2. Assume that P /= NP. Which of the following problems can be solved in polynomial time?
+
+* Given a directed graph with nonnegative edge lengths, compute the length of a maximum-length
+shortest path between any pair of vertices (i.e. max_u,v . d(u,v) where d(u,v) is the shortest-path
+distance between u and v)
+=> Use the Floyd-Warshall algorithm and get the minimum
+
+* Given a directed acyclic graph with real-valued edge lengths, compute the length of a longest path
+between any pair of vertive.
+=> Use the Floyd-Warshall algorithm and get the maximum
+
+* Given a directed graph with nonnegative edge lengths, compute the length of a longest cycle-free
+path between any pair of vertices
+=> False
+
+* Given a directed graph with real-values edge lengths, compute the length of a longest cycle-free
+path between any pair of vertices
+=> False
+
+
+3. Recall the all-pairs shortest-paths problem. Which of the following algorithms are guaranteed to
+be correct on instances with negative edge lengths that don't have any negative-cost cycles?
+
+* Johnson's are weighting algorithm
+=> True
+
+* The Floyd-Warshall algorithm
+=> True
+
+* Run Dijkstra's algorithm n times, once for each choice of a source vertex
+=> False, cannot work on graphs with negative lengths
+
+* Run the Bellman-Ford algorithm n times, once for each choice of a source vertex
+=> True, but slow
+
+
+4. Suppose a computational problem PI that you care about is NP-complete. Which of the following
+statements are true?
+
+* If your boss criticises you for failing to find a polynomial-time algorithm for PI, you can
+legitimately claim that thousands of other scientists (including Turing Award winners, etc.) have
+likewise tried and failed to solve PI
+=> True
+
+* Since the dynamic programming algorithm paradigm is only useful for designing exact algorithms,
+there is no point trying to apply it to the problem PI.
+=> False, such as the knapsack problem
+
+* NP-completeness is a "death sentence"; you should not try to solve the instances of PI that are
+relevant for your application
+=> True, though you could try use approximation algorithms to solve in polynomial time if required
+
+* Some NP-Complete problems are polynomial-time solvable, and some NP-complete problems are not
+polynomial time solvable
+=> False
+
+
+5. Which of the following statements are logically consistent with our current state of knowledge
+(i.e. with the mathematical statements that have been formally proved)?
+
+* There is an NP-complete problem that is polynomial-time solvable
+=> False
+
+* There is an NP-complete problem that can be solved in O(n^log(n)) time, where n is the size of the
+input
+=> False, that time is polynomial time
+
+* There is no NP-complete problem that can be solved in O(n^log(n)) time, where n is the size of the
+input
+=> True, otherwise that would imply P=NP
+
+* Some NP-complete problems are polynomial time solvable, and some NP-complete programs are not
+polynomial time solvable.
+=> False
+
+
+6. Of the following problems, which can be solved in polynomial time by directly applying
+algorithmic ideas that were discussed in the lecture and/or homeworks?
+
+* Given an undirected graph G and a constant value for k (i.e. k = O(1), independent of the size of
+G), does G have a vertex cover of size as most k?
+=> False
+
+* Given an undirected graph G and a value for k such that k = Theta(log(n)), where n is the number
+of vertices of G, does G have an independent set of size at least k?
+=> False, unless the graph is a path or binary tree
+
+* Given an undirected graph G and a constant value for k (i.e. k = O(1), independent of the size of
+G), does G have an independent set of at least size k?
+=> False, unless the graph is a path or binary tree
+
+* Given an undirected graph G and a constant value for k (i.e. k = Theta(log(n)) where n is the
+number of vertices of G, does G have a vertex cover of size at most k
+=> False
+
+
+7. In lecture we gave a dynamic programming algorithm for the travelling salesman problem. Does this
+algorithm imply that P=NP?
+
+* No. Since we perform a super-polynomial amount of work extracting the final TSP solution from the
+solutions of all subproblems, the algorithm does not run in polynomial time
+=> True
+
+* Yes it does
+=> False
+
+* No. Since we sometimes perform a super-polynomial amount of work computing the solution of a
+single subproblem, the algorithm does not run in polynomial time
+=> True
+
+* No. A polynomial-time algorithm for the travelling salesman problem does not necessarily imply
+that P=NP
+=> False
+
+* No. Since there are an exponential number of subproblems in our dynamic programming formulation,
+the algorithm does not run in polynomial time
+=> True
