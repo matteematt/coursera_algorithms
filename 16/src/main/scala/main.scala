@@ -144,5 +144,5 @@ object Main {
     val ans = files.map(x => Run.run(x))
     println(ans)
   }
-  // T F T
+  // T F T T
 }

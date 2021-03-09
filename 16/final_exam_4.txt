@@ -38,6 +38,8 @@ path between any pair of vertices
 path between any pair of vertices
 => False
 
+Correct
+
 
 3. Recall the all-pairs shortest-paths problem. Which of the following algorithms are guaranteed to
 be correct on instances with negative edge lengths that don't have any negative-cost cycles?
@@ -54,6 +56,7 @@ be correct on instances with negative edge lengths that don't have any negative-
 * Run the Bellman-Ford algorithm n times, once for each choice of a source vertex
 => True, but slow
 
+Correct
 
 4. Suppose a computational problem PI that you care about is NP-complete. Which of the following
 statements are true?
@@ -114,6 +117,8 @@ G), does G have an independent set of at least size k?
 number of vertices of G, does G have a vertex cover of size at most k
 => False
 
+=> All true?
+
 
 7. In lecture we gave a dynamic programming algorithm for the travelling salesman problem. Does this
 algorithm imply that P=NP?
@@ -136,3 +141,71 @@ that P=NP
 * No. Since there are an exponential number of subproblems in our dynamic programming formulation,
 the algorithm does not run in polynomial time
 => True
+
+
+8. Consider the Knapsack problem and the following greedy algorithm: (1) sort the items in
+non-increasing order of value over size (i.e. the ratio v_i / w_i); (2) return the maximal prefix of
+items that fits into the Knapsack (i.e. the k items with the largest ratios, where k is as large as
+possible subject to the sum of the item sizes being at most the knapsack capacity W). Which of the
+following are true?
+
+* If all items have the same size, then this algorithm always outputs an optimal solution (no matter
+how ties are broken).
+=> True
+
+* If all items have the same value/size ration, then this algorithm always outputs an optimal solution
+(no matter how ties are broken).
+=> True
+
+* This algorithm always outputs a feasible solution with total value of at least 50% times that of
+an optimal solution
+=> False
+
+* If all items have the same value, then this algorithm always outputs an optimal solution (no
+matter how ties are broken)
+=> True
+
+* If the size of every item is at most 20% of the Knapsack capacity (i.e. w_i <= W/5 for every i),
+then this algorithm is guaranteed to output a feasible solution with total value of at least 80%
+times that of an optimal solution
+=> True
+
+
+9. Which of the following statements are true about the generic local search algorithm?
+
+* The output of the generic search algorithm generally depends on the choice of the superior
+neighbouring neighbouring solution to move to next (in an iteration where there are multiple such
+solutions).
+=> True
+
+* The generic local search algorithm is guaranteed to terminate in a polynomial number of iterations
+=> False? You would usually set it to do this though
+
+* The output of the generic local search algorithm generally depends on the choice of the starting
+point
+=> True
+
+* The generic local search algorithm is guaranteed to eventually converge to an optimal solution
+=> False
+
+Correct
+
+
+10. Which of the following statements are true about the tractability of the Knapsack problem?
+
+* Assume that P /= NP. The special case of the Knapsack problem in which all item values, item
+sizes, and the knapsack capacity are positive integers, can be solved in polynomial time
+=> True?
+
+* If there is a polynomial-time algorithm for the Knapsack problem in general, then P = NP
+=> True
+
+* Assume that P /= NP. The special case of the Knapsack problem in which all item values are
+positive integers less than or equal to n^5 where in is the number of items, can be solved in
+polynomial time
+=> False
+
+* Assume that P /= NP. The special case of the Knapsack problem in which all item sizes are
+positive integers less than or equal to n^5 where in is the number of items, can be solved in
+polynomial time
+=> False
