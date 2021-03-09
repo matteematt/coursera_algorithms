@@ -44,20 +44,16 @@ object Reducer {
       val fixed = (for (i <- 0 to (setLen - 1))
                     yield (i, setX(i), setX(i) ^ negX(i))
                     ).filter{ case (_,_,s) => s }.toList
-      // println(fixed)
 
       if (fixed.size == 0) (clauses,constraints)
       else {
         val newConstraints = fixed.map { case (x,setX,_) => Constraint(!setX,x) } ++ constraints
         val filterVals = fixed.map { case (x,_,_) => x }
-        // val filterVals = constraints.map { case Constraint(_,x) => x }
+
         val filterMap = filterVals.zip(Stream.continually(List(true))).toMap
         val filteredClauses = clauses.filter { case Clause(_,x,_,y) =>
           !(filterMap.isDefinedAt(x) || filterMap.isDefinedAt(y))
         }
-        // println(newConstraints)
-        // println(filterVals)
-        // println(filteredClauses)
         go(filteredClauses,newConstraints)
       }
     }
@@ -69,16 +65,29 @@ object Run {
 
   private val r = new Random()
 
+  /* Imperitive way
   private def getInitial(len: Int, allConstraints: List[Constraint]): ArrayBuffer[Boolean] = {
-    var constraints = allConstraints
+    var constraints = allConstraints.sortBy(_.x)
     val buff = ArrayBuffer.fill(len)(false)
-    for (i <- 0 to (len - 1)) {
-      if (constraints.length > 0 && constraints.head.x == i) {
+    var i = 0
+    while (i < len) {
+      if (constraints.nonEmpty && constraints.head.x == i) {
         buff(i) = !constraints.head.negX
         constraints = constraints.tail
       } else {
         buff(i) = math.random < 0.5
       }
+      i += 1
+    }
+    buff
+  }
+  */
+
+  private def getInitial(len: Int, allConstraints: List[Constraint]): ArrayBuffer[Boolean] = {
+    var constraintMap = allConstraints.map{ case Constraint(negX,x) => (x,negX)}.toMap
+    val buff = ArrayBuffer.fill(len)(false)
+    for (i <- 0 to (len - 1)) {
+      buff(i) = !constraintMap.get(i).getOrElse(math.random < 0.5)
     }
     buff
   }
@@ -86,7 +95,6 @@ object Run {
   def go(len: Int, clauses: List[Clause], constraints: List[Constraint]): Option[List[Boolean]] = {
     var i = 0
     val logb2n = math.ceil(math.log10(clauses.length) / math.log10(2.0)).toInt
-    println(s"logb2n = $logb2n")
     val twoNSquared = math.ceil(2 * math.pow(clauses.length, 2)).toInt
     var ans: Option[List[Boolean]] = None
 
@@ -105,18 +113,17 @@ object Run {
           j += twoNSquared
           i += logb2n
         } else {
-          // Choose a random failing clause and flip one of the random bits
-          // TODO: Is the shuffle algorithm slow?
+          // Choose a random failing clause
           val clause = r.shuffle(fail).head
-          // if (buff(clause.x) == clause.negX) buff(clause.x) = !buff(clause.x)
-          // else buff(clause.y) = !buff(clause.y)
-          val flipIndex = if (math.random < 0.5) clause.x else clause.y
-          buff(flipIndex) = !buff(flipIndex)
+          // An improvement of the lecture pseudocode is to flip the failing bit
+          // in the clause rather than a random one
+          if (buff(clause.x) == clause.negX) buff(clause.x) = !buff(clause.x)
+          else buff(clause.y) = !buff(clause.y)
         }
         j += 1
       }
       i += 1
-      println(s"Completed ${i-1} / $logb2n => ${((((i-1) / logb2n)) * 100).toInt}%")
+      println(s"Completed ${i} / $logb2n => ${((((i) / logb2n)) * 100).toInt}%")
     }
     ans
   }
@@ -126,12 +133,7 @@ object Run {
     // Get the number of variables, +1 because I reduce all numbers by 1
     // to 0 index the variables
     val setLen = input.flatMap{ case Clause(_,x,_,y) => List(x,y)}.max + 1
-    println(setLen)
     val (clauses, constraints) = Reducer.reduce(setLen, input)
-    // val (clauses2, constraints2) = Reducer.reduce(setLen, clauses)
-    println(clauses.length)
-    // println(clauses2.length)
-    // Run.go(setLen, clauses2, constraints2 ++ constraints)
     Run.go(setLen, clauses, constraints)
   }
 }
@@ -144,5 +146,4 @@ object Main {
     val ans = files.map(x => Run.run(x))
     println(ans)
   }
-  // T F T T
 }
