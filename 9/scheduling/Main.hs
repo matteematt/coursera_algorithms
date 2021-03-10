@@ -36,7 +36,7 @@ main :: IO ()
 main = interact run
 
 parseDJobs :: String -> [DJob]
-parseDJobs xs = map (\(w:l:_) -> DJob w l (w-l)) $ map (map (read) . words) $ tail $ lines xs
+parseDJobs xs = map ((\(w:l:_) -> DJob w l (w-l)) . (map read . words)) $ tail $ lines xs
 
 convertDJob :: DJob -> RJob
 convertDJob (DJob w l _) = RJob w l (fromInteger w / fromInteger l)
@@ -54,7 +54,7 @@ calcRJobs (time,acum) (RJob w l d) =
 run :: String -> String
 run xs = let djobs = parseDJobs xs
              rjobs = map convertDJob djobs
-             (_,dt) = foldl' calcDJobs (0,0) $ sort $ djobs
-             (_,rt) = foldl' calcRJobs (0,0) $ reverse $ sort $ rjobs
+             (_,dt) = foldl' calcDJobs (0,0) $ sort djobs
+             (_,rt) = foldl' calcRJobs (0,0) $ reverse $ sort rjobs
           in show dt ++ " " ++ show rt
 

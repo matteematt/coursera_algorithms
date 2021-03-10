@@ -13,13 +13,13 @@ range :: [Int]
 range = [negate 10000..10000]
 
 emptyMap :: M.Map Int Bool
-emptyMap = M.fromList $ zip [] []
+emptyMap = M.fromList []
 
 run :: String -> String
 run xs = let parsedInput = map (read :: String -> Int) $ words xs
              hashMap = M.fromList $ zip parsedInput (repeat True)
              pcalc r = map (\t -> trace (show t) (countVals hashMap parsedInput t)) r
-             qlen = (div (length range) 4)
+             qlen = div (length range) 4
              r1 = pcalc (take qlen range)
              r2 = pcalc (take qlen $ drop qlen range)
              r3 = pcalc (take qlen $ drop (qlen*2) range)

@@ -74,7 +74,7 @@ getAMVal ij am = case M.lookup ij am of (Just x) -> x
 
 checkNegCycle :: Int -> AdjMat -> Bool
 checkNegCycle maxNode am =
-  foldr (\i x -> if let (Just v) = M.lookup (i,i) am in v < (BInt 0) then True else x) False [1..maxNode]
+  foldr (\i x -> (let (Just v) = M.lookup (i,i) am in v < BInt 0) || x) False [1..maxNode]
 
 -- Do I want to ignore the diagonals?
 shortestPath :: Int -> AdjMat -> InfInt
@@ -91,12 +91,12 @@ setup input = let (am,maxNode) = readEdgeList $ parseEdgeList input
 
 parseEdgeList :: String -> [Edge]
 parseEdgeList xs =
-  map ((\(t:h:l:_) -> Edge t h l) . map (read)  . words) $ tail $ lines xs
+  map ((\(t:h:l:_) -> Edge t h l) . map read  . words) $ tail $ lines xs
 
 readEdgeList :: [Edge] -> (AdjMat, Int)
-readEdgeList edgeList =
+readEdgeList =
   foldl' (\(am,high) (Edge t h l) -> (M.insert (t,h) (BInt l) am, maximum [t,h,high]))
-    (emptyAdjacecnyMatrix,0) edgeList
+    (emptyAdjacecnyMatrix,0)
   where emptyAdjacecnyMatrix = M.fromList $ zip [(1,1)] [BInt 0] :: AdjMat
 
 testInput = "Ignore\n\

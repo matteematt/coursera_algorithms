@@ -28,7 +28,7 @@ fastCI fn xs = let (lhs,rhs) = splitAt (div (length xs) 2) xs
                    (li,lhs') = fastCI fn lhs
                    (ri,rhs') = fastCI fn rhs
                    (si,xs') = fn lhs' (length lhs') rhs'
-                in ((li + ri + si), xs')
+                in (li + ri + si, xs')
 
 fastSI :: Ord a => [a] -> Int -> [a] -> (Int,[a])
 fastSI [] _ [] = (0,[])
@@ -40,7 +40,7 @@ inv :: [Int] -> Int
 inv x = let (i,_) = fastCI fastSI x in i
 
 run :: String -> String
-run x = show $ inv $ map (read :: String -> Int) $ lines $ x
+run x = show $ inv $ map (read :: String -> Int) $ lines x
 
 main :: IO ()
 main = interact run

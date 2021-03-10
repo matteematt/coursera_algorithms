@@ -5,7 +5,7 @@ import Data.List
 import qualified Data.Map as M
 
 main :: IO ()
-main = interact (\x -> show $ run x)
+main = interact (show . run)
 
 run :: String -> [Int]
 run xs = take 5 $ reverse $ sort $ map (\(_,xs) -> length xs) $ M.toList $ kosaraju $ buildGraph xs
@@ -38,7 +38,7 @@ visited = M.fromList $ zip [1..(length $ M.keys testGraph)] (repeat False)
 
 kosarajuOrdering :: Graph -> M.Map Int Bool -> [Int]
 kosarajuOrdering graph visisted =
-  (\(_,ord) -> ord)
+  snd
   $ foldl' (\(vis,ord) edge -> go1 graph vis ord edge) (visited,[])
   $ reverse
   $ M.keys graph
@@ -46,7 +46,7 @@ kosarajuOrdering graph visisted =
 -- Returns the ordering backwards
 go1 :: Graph -> M.Map Int Bool -> [Int] -> Int -> (M.Map Int Bool,[Int])
 go1 graph visited order curr =
-  if (M.lookup curr visited) == Just True
+  if M.lookup curr visited == Just True
      then (visited,order)
      else let visited' = M.insert curr True visited
               neighbours = bkwdNeighbours graph curr
@@ -67,7 +67,7 @@ leaderMap = M.fromList $ zip [1..(length $ M.keys testGraph)] (repeat [])
 
 go2 :: Graph -> M.Map Int Bool -> Int -> M.Map Int [Int] -> Int -> (M.Map Int Bool,M.Map Int [Int])
 go2 graph visited leader leaderMap curr =
-  if (M.lookup curr visited) == Just True
+  if M.lookup curr visited == Just True
      then (visited,leaderMap)
      else let visited' = M.insert curr True visited
               leaderMap' = mapValTransform leaderMap leader (\xs -> curr : xs)
@@ -75,21 +75,20 @@ go2 graph visited leader leaderMap curr =
               (vis,lm) = foldl' (\(vis,lm) next -> go2 graph vis leader lm next) (visited',leaderMap') neighbours
            in (vis,lm)
 
-groupedLeaders = (\(_,lm) -> lm)
+groupedLeaders = snd
                  $ foldl' (\(vis,lm) edge -> go2 testGraph vis edge lm edge) (visited,leaderMap)
                  $ kosarajuOrdering testGraph visited
 
 -- Graph query functions
 fwdNeighbours :: Graph -> Int -> [Int]
-fwdNeighbours graph k = _neighbours graph k (\(v,_) -> v)
+fwdNeighbours graph k = _neighbours graph k fst
 
 bkwdNeighbours :: Graph -> Int -> [Int]
-bkwdNeighbours graph k = _neighbours graph k (\(_,v) -> v)
+bkwdNeighbours graph k = _neighbours graph k snd
 
 _neighbours :: Graph -> Int -> (([Int],[Int]) -> [Int]) -> [Int]
 _neighbours graph k fn = let v = M.lookup k graph
-                          in case v of Nothing -> []
-                                       Just pair -> fn pair
+                          in maybe [] fn v
 
 -- Build the graph from input
 addEdge :: Graph -> (Int,Int) -> Graph
@@ -99,7 +98,7 @@ addEdge m (n,e) = let m' = mapValTransform m n (pushLHS e)
 mapValTransform :: Ord k => M.Map k a -> k -> (a -> a) -> M.Map k a
 mapValTransform m k fn = let curr = M.lookup k m
                           in case curr of Nothing -> m
-                                          Just (v) -> M.insert k (fn v) m
+                                          Just v -> M.insert k (fn v) m
 
 pushLHS :: Int -> ([Int],[Int]) -> ([Int],[Int])
 pushLHS x (l,r) = (x:l,r)
@@ -107,14 +106,14 @@ pushLHS x (l,r) = (x:l,r)
 pushRHS :: Int -> ([Int],[Int]) -> ([Int],[Int])
 pushRHS x (l,r) = (l,x:r)
 
-adjacencyList = map ((\(a:b:_) -> (a,b)) . map (read :: String -> Int) . words) $ lines $ testCase3
+adjacencyList = map ((\(a:b:_) -> (a,b)) . map (read :: String -> Int) . words) $ lines testCase3
 
 
 buildGraph x = let adjacencyList =
-                     map ((\(a:b:_) -> (a,b)) . map (read :: String -> Int) . words) $ lines $ x
+                     map ((\(a:b:_) -> (a,b)) . map (read :: String -> Int) . words) $ lines x
                    nodesCount = length $ group $ sort $ foldl' (\xs (a,b) -> a : b : xs) [] adjacencyList
                    nodeList = M.fromList $ zip [1..nodesCount] (repeat ([],[]))
-                in foldl' (\m nodeEdge -> addEdge m nodeEdge) nodeList adjacencyList
+                in foldl' addEdge nodeList adjacencyList
 
 -- Confirmed working
 testData = "1 3\n\

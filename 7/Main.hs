@@ -33,8 +33,8 @@ calcMedian minH maxH =
    in m
 
 balanceHeaps :: (Heap,Heap) -> (Heap,Heap)
-balanceHeaps (minH,maxH) | sizeDiff >= 2 = let (minH',(Just x)) = hPop minH in (minH',hAdd maxH x)
-                         | sizeDiff <= negate 2 = let (maxH',(Just x)) = hPop maxH in (hAdd minH x,maxH')
+balanceHeaps (minH,maxH) | sizeDiff >= 2 = let (minH',Just x) = hPop minH in (minH',hAdd maxH x)
+                         | sizeDiff <= negate 2 = let (maxH',Just x) = hPop maxH in (hAdd minH x,maxH')
                          | otherwise = (minH,maxH)
   where minLen = hLen minH
         maxLen = hLen maxH
